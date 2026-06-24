@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Admin Login — Cit-E Cycling</title>
+    <link rel="icon" href="./Resource/Logo.png" type="image/png" sizes="32x32">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="bg-decor" aria-hidden="true">
+        <span class="blob blob-green"></span>
+        <span class="blob blob-amber"></span>
+        <span class="blob blob-ink"></span>
+    </div>
+
+    <nav class="navbar" aria-label="Primary">
+        <div class="container nav-inner">
+            <a class="logo" href="index.html" aria-label="Cit-E Cycling home">
+                <img src="./Resource/Logo.png" alt="Cit-E Cycling logo">
+                <span class="logo-text">Cit-E Cycling</span>
+            </a>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost btn-sm">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="portal-card glass">
+            <a href="index.html" class="back-link">&larr; Back to index</a>
+
+            <div class="portal-header">
+
+                <h1>Admin Control Center</h1>
+                <p>Please enter your credentials to access the administration portal.</p>
+            </div>
+
+            <form action="login.php" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Enter username"
+                        required autofocus>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 24px;">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Enter password" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Sign
+                        In</button>
+                </div>
+            </form>
+
+            <div
+                style="margin-top: 24px; text-align: center; font-size: 0.8rem; color: var(--asphalt); font-family: var(--font-mono);">
+                <p>Default credentials: <strong>admin</strong> / <strong>password123</strong></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="margin-top: 100px;">
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Cit-E Cycling. All rights reserved.</p>
+            <p class="footer-tag">Built for riders, by riders.</p>
+        </div>
+    </footer>
+</body>
+
+</html>

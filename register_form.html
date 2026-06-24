@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Register Your Interest — Cit-E Cycling</title>
+    <link rel="icon" href="./Resource/Logo.png" type="image/png" sizes="32x32">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="bg-decor" aria-hidden="true">
+        <span class="blob blob-green"></span>
+        <span class="blob blob-amber"></span>
+        <span class="blob blob-ink"></span>
+    </div>
+
+    <nav class="navbar" aria-label="Primary">
+        <div class="container nav-inner">
+            <a class="logo" href="index.html" aria-label="Cit-E Cycling home">
+                <img src="./Resource/Logo.png" alt="Cit-E Cycling logo">
+                <span class="logo-text">Cit-E Cycling</span>
+            </a>
+            <div class="nav-actions">
+                <a href="index.html" class="btn btn-ghost btn-sm">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="portal-card glass">
+            <a href="index.html" class="back-link">&larr; Back to index</a>
+
+            <div class="portal-header">
+                <div class="icon-circle">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M4 21v-1a8 8 0 0 1 16 0v1"></path>
+                    </svg>
+                </div>
+                <h1>Join the Waitlist</h1>
+                <p>Register your interest to get early access and updates on the next launch in your city.</p>
+            </div>
+
+            <form action="register.php" method="POST">
+                <div class="form-group">
+                    <label for="firstname">First Name</label>
+                    <input type="text" id="firstname" name="firstname" class="form-control" placeholder="e.g. Alex"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="surname">Surname</label>
+                    <input type="text" id="surname" name="surname" class="form-control" placeholder="e.g. Morgan"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="e.g. alex@example.com"
+                        required>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" value="yes" required>
+                    <label for="terms">I accept the terms and conditions and agree to receive updates about Cit-E
+                        Cycling rollout and events in my area.</label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Submit Registration</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer" style="margin-top: 80px;">
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Cit-E Cycling. All rights reserved.</p>
+            <p class="footer-tag">Built for riders, by riders.</p>
+        </div>
+    </footer>
+</body>
+
+</html>
