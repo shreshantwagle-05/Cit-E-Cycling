@@ -9,12 +9,15 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
     <link
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="index.css">
+    <style>
+        
+    </style>
+
 </head>
 
 <body>
@@ -37,21 +40,16 @@
 
             <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu"
                 aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
-
-            <!-- <div class="nav-menu" id="navMenu">
-                <ul class="nav-links">
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="#how">How it works</a></li>
-                    <li><a href="#cities">Cities</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                </ul> -->
 
             <div class="nav-actions">
                 <a href="admin_login.html" class="nav-admin">Admin login</a>
                 <a href="register_form.html" class="btn btn-primary btn-sm">Register interest</a>
             </div>
-        </div>
+
         </div>
     </nav>
 
@@ -81,52 +79,179 @@
                 </div>
 
                 <div class="hero-visual glass glass-dark reveal" data-reveal data-reveal-delay="1" data-glow>
-                    <span class="badge">Pre&#8209;launch</span>
+                    <div class="map-header">
+                        <span class="badge">Pre&#8209;launch</span>
+                        <div class="map-stats">
+                            <span class="map-stat"><span class="map-stat-val" id="statRiders">1,204</span> riders</span>
+                            <span class="map-stat-sep">&middot;</span>
+                            <span class="map-stat"><span class="map-stat-val" id="statKm">8.3</span> km avg</span>
+                            <span class="map-stat-sep">&middot;</span>
+                            <span class="map-stat live-dot-wrap"><span class="live-dot"></span> Live</span>
+                        </div>
+                    </div>
 
-                    <svg class="route-svg" viewBox="0 0 640 380" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-                        <defs>
-                            <pattern id="cityGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-                                <path d="M0,0 H40 M0,0 V40" class="grid-line" />
-                            </pattern>
-                            <filter id="markerGlow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur stdDeviation="3" result="blur" />
-                                <feMerge>
-                                    <feMergeNode in="blur" />
-                                    <feMergeNode in="SourceGraphic" />
-                                </feMerge>
-                            </filter>
-                        </defs>
+                    <div class="map-wrap">
+                        <svg id="cityMap" class="route-svg" viewBox="0 0 640 360" preserveAspectRatio="xMidYMid meet"
+                            aria-hidden="true">
+                            <defs>
+                                <pattern id="cityGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+                                    <path d="M40,0 L0,0 L0,40" fill="none" stroke="rgba(238,241,234,0.07)"
+                                        stroke-width="1" />
+                                </pattern>
+                                <filter id="markerGlow" x="-80%" y="-80%" width="260%" height="260%">
+                                    <feGaussianBlur stdDeviation="4" result="blur" />
+                                    <feMerge>
+                                        <feMergeNode in="blur" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                                <filter id="hubGlow" x="-100%" y="-100%" width="300%" height="300%">
+                                    <feGaussianBlur stdDeviation="5" result="blur" />
+                                    <feMerge>
+                                        <feMergeNode in="blur" />
+                                        <feMergeNode in="SourceGraphic" />
+                                    </feMerge>
+                                </filter>
+                                <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#1e7a46" stop-opacity="0.3" />
+                                    <stop offset="50%" stop-color="#1e7a46" stop-opacity="0.9" />
+                                    <stop offset="100%" stop-color="#1e7a46" stop-opacity="0.4" />
+                                </linearGradient>
+                                <linearGradient id="routeGradBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.2" />
+                                    <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.7" />
+                                    <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.3" />
+                                </linearGradient>
+                                <clipPath id="mapClip">
+                                    <rect width="640" height="360" />
+                                </clipPath>
+                            </defs>
 
-                        <rect x="0" y="0" width="640" height="380" fill="url(#cityGrid)" />
+                            <rect width="640" height="360" fill="url(#cityGrid)" />
 
-                        <!-- primary route -->
-                        <path class="route-path"
-                            d="M30,330 C110,300 90,230 180,205 C260,182 240,130 340,115 C410,105 460,135 540,70" />
+                            <!-- Building footprints -->
+                            <g clip-path="url(#mapClip)" opacity="0.15">
+                                <rect x="60" y="40" width="55" height="35" rx="3" fill="#eef1ea" />
+                                <rect x="130" y="30" width="40" height="50" rx="3" fill="#eef1ea" />
+                                <rect x="200" y="50" width="60" height="30" rx="3" fill="#eef1ea" />
+                                <rect x="290" y="35" width="45" height="45" rx="3" fill="#eef1ea" />
+                                <rect x="370" y="25" width="70" height="40" rx="3" fill="#eef1ea" />
+                                <rect x="465" y="40" width="50" height="35" rx="3" fill="#eef1ea" />
+                                <rect x="540" y="20" width="65" height="50" rx="3" fill="#eef1ea" />
+                                <rect x="55" y="120" width="45" height="55" rx="3" fill="#eef1ea" />
+                                <rect x="120" y="130" width="65" height="40" rx="3" fill="#eef1ea" />
+                                <rect x="210" y="115" width="50" height="60" rx="3" fill="#eef1ea" />
+                                <rect x="300" y="125" width="55" height="45" rx="3" fill="#eef1ea" />
+                                <rect x="385" y="110" width="60" height="50" rx="3" fill="#eef1ea" />
+                                <rect x="470" y="120" width="45" height="55" rx="3" fill="#eef1ea" />
+                                <rect x="550" y="100" width="55" height="45" rx="3" fill="#eef1ea" />
+                                <rect x="60" y="215" width="55" height="45" rx="3" fill="#eef1ea" />
+                                <rect x="140" y="225" width="50" height="35" rx="3" fill="#eef1ea" />
+                                <rect x="220" y="210" width="65" height="50" rx="3" fill="#eef1ea" />
+                                <rect x="315" y="220" width="45" height="40" rx="3" fill="#eef1ea" />
+                                <rect x="390" y="205" width="60" height="55" rx="3" fill="#eef1ea" />
+                                <rect x="475" y="215" width="50" height="45" rx="3" fill="#eef1ea" />
+                                <rect x="555" y="200" width="50" height="50" rx="3" fill="#eef1ea" />
+                                <rect x="65" y="300" width="60" height="40" rx="3" fill="#eef1ea" />
+                                <rect x="160" y="295" width="50" height="45" rx="3" fill="#eef1ea" />
+                                <rect x="240" y="305" width="65" height="35" rx="3" fill="#eef1ea" />
+                                <rect x="340" y="290" width="55" height="50" rx="3" fill="#eef1ea" />
+                                <rect x="420" y="300" width="60" height="40" rx="3" fill="#eef1ea" />
+                                <rect x="510" y="285" width="65" height="55" rx="3" fill="#eef1ea" />
+                            </g>
 
-                        <!-- secondary route, blue accent -->
-                        <path class="route-path-alt"
-                            d="M30,330 C90,260 150,290 220,250 C300,205 340,250 420,210 C480,180 500,140 560,90" />
+                            <!-- Road grid -->
+                            <g stroke="rgba(238,241,234,0.08)" stroke-width="6" fill="none" stroke-linecap="round">
+                                <line x1="0" y1="90" x2="640" y2="90" />
+                                <line x1="0" y1="185" x2="640" y2="185" />
+                                <line x1="0" y1="280" x2="640" y2="280" />
+                                <line x1="160" y1="0" x2="160" y2="360" />
+                                <line x1="320" y1="0" x2="320" y2="360" />
+                                <line x1="480" y1="0" x2="480" y2="360" />
+                            </g>
 
-                        <!-- main hubs -->
-                        <circle class="hub" cx="30" cy="330" r="7" />
-                        <circle class="hub" cx="340" cy="115" r="7" />
-                        <circle class="hub" cx="540" cy="70" r="7" />
+                            <!-- Primary route path (used for animateMotion) -->
+                            <path id="primaryPath"
+                                d="M30,320 C80,295 100,240 175,210 C250,180 260,145 335,125 C400,108 445,130 510,95 C555,72 590,55 622,42"
+                                fill="none" stroke="url(#routeGrad)" stroke-width="3.5" stroke-linecap="round" />
+                            <path
+                                d="M30,320 C80,295 100,240 175,210 C250,180 260,145 335,125 C400,108 445,130 510,95 C555,72 590,55 622,42"
+                                fill="none" stroke="rgba(30,122,70,0.5)" stroke-width="1.5" stroke-dasharray="6 10"
+                                stroke-linecap="round" />
 
-                        <!-- secondary hubs, blue -->
-                        <circle class="hub-blue" cx="220" cy="250" r="5" />
-                        <circle class="hub-blue" cx="560" cy="90" r="5" />
+                            <!-- Alt route -->
+                            <path id="altPath"
+                                d="M30,320 C70,270 130,285 200,255 C280,220 330,265 410,225 C465,198 495,160 545,120 C575,98 605,80 625,65"
+                                fill="none" stroke="url(#routeGradBlue)" stroke-width="2.5" stroke-linecap="round" />
+                            <path
+                                d="M30,320 C70,270 130,285 200,255 C280,220 330,265 410,225 C465,198 495,160 545,120 C575,98 605,80 625,65"
+                                fill="none" stroke="rgba(59,130,246,0.4)" stroke-width="1" stroke-dasharray="4 12"
+                                stroke-linecap="round" />
 
-                        <!-- live pulse ring on the central hub -->
-                        <circle class="pulse-ring" cx="340" cy="115" r="14">
-                            <animate attributeName="r" values="10;24;10" dur="2.4s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0.6;0;0.6" dur="2.4s" repeatCount="indefinite" />
-                        </circle>
+                            <!-- Hub: start -->
+                            <circle cx="30" cy="320" r="10" fill="rgba(30,122,70,0.2)" filter="url(#hubGlow)" />
+                            <circle cx="30" cy="320" r="6" fill="#101b2c" stroke="#1e7a46" stroke-width="2.5" />
+                            <circle cx="30" cy="320" r="2.5" fill="#1e7a46" />
 
-                        <!-- traveling marker -->
-                        <circle class="route-marker" cx="0" cy="0" r="9" filter="url(#markerGlow)" />
-                    </svg>
+                            <!-- Hub: central pulse -->
+                            <circle cx="335" cy="125" r="20" fill="none" stroke="#1e7a46" stroke-width="1.2"
+                                opacity="0.5">
+                                <animate attributeName="r" values="12;26;12" dur="2.6s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.5;0;0.5" dur="2.6s"
+                                    repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="335" cy="125" r="9" fill="rgba(30,122,70,0.25)" filter="url(#hubGlow)" />
+                            <circle cx="335" cy="125" r="6" fill="#101b2c" stroke="#1e7a46" stroke-width="2.5" />
+                            <circle cx="335" cy="125" r="2.5" fill="#1e7a46" />
 
-                    <p class="visual-caption">Your route, mapped and ready</p>
+                            <!-- Hub: end -->
+                            <circle cx="622" cy="42" r="8" fill="rgba(30,122,70,0.2)" filter="url(#hubGlow)" />
+                            <circle cx="622" cy="42" r="5" fill="#101b2c" stroke="#1e7a46" stroke-width="2" />
+                            <circle cx="622" cy="42" r="2" fill="#1e7a46" />
+
+                            <!-- Blue hubs -->
+                            <circle cx="200" cy="255" r="7" fill="rgba(59,130,246,0.2)" filter="url(#hubGlow)" />
+                            <circle cx="200" cy="255" r="5" fill="#101b2c" stroke="#3b82f6" stroke-width="2" />
+                            <circle cx="200" cy="255" r="2" fill="#3b82f6" />
+
+                            <circle cx="545" cy="120" r="7" fill="rgba(59,130,246,0.2)" filter="url(#hubGlow)" />
+                            <circle cx="545" cy="120" r="5" fill="#101b2c" stroke="#3b82f6" stroke-width="2" />
+                            <circle cx="545" cy="120" r="2" fill="#3b82f6" />
+
+                            <!-- Labels -->
+                            <text x="30" y="342" text-anchor="middle" font-family="JetBrains Mono, monospace"
+                                font-size="9" fill="rgba(238,241,234,0.55)" letter-spacing="0.05em">START</text>
+                            <text x="335" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace"
+                                font-size="9" fill="rgba(238,241,234,0.55)" letter-spacing="0.05em">HUB</text>
+                            <text x="622" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace"
+                                font-size="9" fill="rgba(238,241,234,0.55)" letter-spacing="0.05em">END</text>
+
+                            <!-- Blue rider -->
+                            <circle id="riderBlue" r="6" fill="#3b82f6" stroke="#101b2c" stroke-width="2"
+                                filter="url(#markerGlow)">
+                                <animateMotion dur="14s" repeatCount="indefinite" begin="3s">
+                                    <mpath href="#altPath" />
+                                </animateMotion>
+                            </circle>
+
+                            <!-- Main amber rider -->
+                            <circle id="riderMain" r="9" fill="#f2a93b" stroke="#101b2c" stroke-width="2.5"
+                                filter="url(#markerGlow)">
+                                <animateMotion dur="10s" repeatCount="indefinite">
+                                    <mpath href="#primaryPath" />
+                                </animateMotion>
+                            </circle>
+                        </svg>
+
+                        <div class="map-overlay">
+                            <div class="map-legend">
+                                <span class="legend-dot legend-green"></span><span>Green Route</span>
+                                <span class="legend-dot legend-blue"></span><span>Blue Route</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="visual-caption">Live city routes &middot; Bristol pilot</p>
                 </div>
 
             </div>
@@ -136,10 +261,10 @@
         <section class="features" id="features" aria-labelledby="features-heading">
             <div class="container">
                 <p class="eyebrow eyebrow-on-light reveal" data-reveal>What's waiting for you</p>
-                <h2 id="features-heading" class="section-heading reveal" data-reveal>Everything for the everyday rider
-                </h2>
-                <p class="section-intro reveal" data-reveal>Once Cit-E opens in your city, here's what's waiting for
-                    you.</p>
+                <h2 id="features-heading" class="section-heading reveal" data-reveal>Everything for the everyday
+                    rider</h2>
+                <p class="section-intro reveal" data-reveal>Once Cit-E opens in your city, here's what's waiting
+                    for you.</p>
 
                 <div class="feature-grid">
                     <article class="feature-card glass reveal" data-reveal data-glow>
@@ -178,7 +303,8 @@
         <section class="how-it-works" id="how" aria-labelledby="how-heading">
             <div class="container">
                 <p class="eyebrow eyebrow-on-light reveal" data-reveal>Getting started</p>
-                <h2 id="how-heading" class="section-heading reveal" data-reveal>Three stops to your first ride</h2>
+                <h2 id="how-heading" class="section-heading reveal" data-reveal>Three stops to your first ride
+                </h2>
 
                 <ol class="step-list">
                     <li class="step-item glass reveal" data-reveal>
@@ -213,8 +339,8 @@
             <div class="container">
                 <p class="eyebrow eyebrow-on-light reveal" data-reveal>The rollout</p>
                 <h2 id="cities-heading" class="section-heading reveal" data-reveal>Where we're riding next</h2>
-                <p class="section-intro reveal" data-reveal>Cit-E opens one city at a time, so every launch gets the
-                    route map right.</p>
+                <p class="section-intro reveal" data-reveal>Cit-E opens one city at a time, so every launch gets
+                    the route map right.</p>
 
                 <ul class="city-track">
                     <li class="city-stop is-live reveal" data-reveal>
@@ -288,8 +414,8 @@
                         </button>
                         <div class="faq-panel" id="faq-panel-2" role="region" aria-labelledby="faq-control-2">
                             <div class="faq-panel-inner">
-                                <p>No — Cit-E works with your own bike or a city bike-share partner, depending on what's
-                                    available where you live.</p>
+                                <p>No — Cit-E works with your own bike or a city bike-share partner, depending on
+                                    what's available where you live.</p>
                             </div>
                         </div>
                     </div>
@@ -316,8 +442,8 @@
                         </button>
                         <div class="faq-panel" id="faq-panel-4" role="region" aria-labelledby="faq-control-4">
                             <div class="faq-panel-inner">
-                                <p>Every tracked ride logs the distance and estimated emissions saved versus driving,
-                                    building into a running total on your profile.</p>
+                                <p>Every tracked ride logs the distance and estimated emissions saved versus
+                                    driving, building into a running total on your profile.</p>
                             </div>
                         </div>
                     </div>
@@ -330,8 +456,8 @@
                         </button>
                         <div class="faq-panel" id="faq-panel-5" role="region" aria-labelledby="faq-control-5">
                             <div class="faq-panel-inner">
-                                <p>Yes. Once your city is live, any rider can propose a route and open it up for others
-                                    to join.</p>
+                                <p>Yes. Once your city is live, any rider can propose a route and open it up for
+                                    others to join.</p>
                             </div>
                         </div>
                     </div>
@@ -345,7 +471,6 @@
                 <div class="cta-inner glass glass-dark reveal" data-reveal data-glow>
                     <h2>Be one of the first riders.</h2>
                     <p>We're rolling out city by city — register now.</p>
-
                     <a href="register_form.html" class="btn btn-primary">
                         Register Your Interest <span aria-hidden="true">&rarr;</span>
                     </a>
@@ -398,6 +523,7 @@
                     </a>
                 </div>
             </div>
+
         </div>
 
         <div class="container footer-bottom">
