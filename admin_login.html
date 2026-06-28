@@ -4,830 +4,493 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login — Cit-E Cycling</title>
-    <link rel="icon" href="./Resource/Logo.png" type="image/png" sizes="32x32">
+    <title>Admin Login | Cit-E Cycling</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="admin_login.css">
+
     <style>
-      
-        .al-body {
-            min-height: 100vh;
-            background: #f0f4f0;
-            display: flex;
-            flex-direction: column;
-            font-family: "Inter", var(--font-body, -apple-system), sans-serif;
-            overflow-x: hidden;
-            font-size: 16px;
+        :root {
+            --forest: #1e7a46;
+            --forest-dark: #145c34;
+            --forest-light: #2f9e5c;
+            --amber: #f2a93b;
+            --amber-dark: #d88f1f;
+            --ink: #101b2c;
+            --ink-soft: #16243a;
+            --paper: #f4f7f3;
+            --muted: #62736b;
         }
 
-        /* Soft green-tinted background */
-        .al-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            background:
-                radial-gradient(ellipse 80% 60% at 10% 20%,
-                    rgba(30, 122, 70, 0.07) 0%,
-                    transparent 60%),
-                radial-gradient(ellipse 60% 50% at 90% 80%,
-                    rgba(30, 122, 70, 0.05) 0%,
-                    transparent 60%),
-                #f0f4f0;
-            pointer-events: none;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* ============================================
-   Top Navigation Bar
-   ============================================ */
-        .al-nav {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(30, 122, 70, 0.1);
-            padding: 0 32px;
-            height: 64px;
-            display: flex;
-            align-items: center;
+        html {
+            scroll-behavior: smooth;
         }
 
-        .al-nav-inner {
-            width: 100%;
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .al-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .al-logo img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 1.5px solid var(--route-green);
-            object-fit: cover;
-        }
-
-        .al-logo span {
-            font-family: "Space Grotesk", var(--font-display, sans-serif);
-            font-weight: 700;
-            font-size: 1.05rem;
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             color: var(--ink);
+            background: var(--paper);
+            min-height: 100vh;
+        }
+
+        h1,
+        h2,
+        h3,
+        .logo-text {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
             letter-spacing: -0.01em;
         }
 
-        .al-nav-link {
-            font-family: "JetBrains Mono", var(--font-mono, monospace);
-            font-size: 0.85rem;
-            color: var(--asphalt);
-            text-decoration: none;
-            letter-spacing: 0.02em;
-            transition: color 0.18s;
+        a {
+            color: var(--forest);
         }
 
-        .al-nav-link:hover {
-            color: var(--route-green);
-        }
-
-        /* ============================================
-   Two-Column Layout
-   ============================================ */
-        .al-main {
-            flex: 1;
+        /* ===== Page shell: split screen ===== */
+        .page {
+            min-height: 100vh;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            position: relative;
-            z-index: 1;
+            grid-template-columns: 1.05fr 1fr;
         }
 
-        /* ============================================
-   Brand Panel (Left)
-   ============================================ */
-        .al-panel-brand {
-            background: var(--ink);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 48px;
+        /* ===== Left visual panel ===== */
+        .panel-visual {
             position: relative;
+            background:
+                radial-gradient(circle at 20% 15%, rgba(242, 169, 59, .22), transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(47, 158, 92, .3), transparent 55%),
+                linear-gradient(160deg, var(--ink) 0%, var(--forest-dark) 60%, var(--forest) 100%);
+            color: #fff;
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             overflow: hidden;
         }
 
-        /* Subtle texture on dark panel */
-        .al-panel-brand::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 70% 50% at 20% 30%,
-                    rgba(30, 122, 70, 0.18) 0%,
-                    transparent 60%),
-                radial-gradient(ellipse 50% 60% at 80% 70%,
-                    rgba(30, 122, 70, 0.1) 0%,
-                    transparent 60%);
-            pointer-events: none;
-        }
-
-        /* Subtle grid lines on dark panel */
-        .al-panel-brand::after {
-            content: "";
+        .panel-visual::before {
+            content: '';
             position: absolute;
             inset: 0;
             background-image:
-                repeating-linear-gradient(0deg,
-                    rgba(255, 255, 255, 0.02) 0px,
-                    rgba(255, 255, 255, 0.02) 1px,
-                    transparent 1px,
-                    transparent 60px),
-                repeating-linear-gradient(90deg,
-                    rgba(255, 255, 255, 0.02) 0px,
-                    rgba(255, 255, 255, 0.02) 1px,
-                    transparent 1px,
-                    transparent 60px);
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, .04) 0 1px, transparent 1px 64px),
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, .04) 0 1px, transparent 1px 64px);
             pointer-events: none;
         }
 
-        .al-brand-content {
-            position: relative;
-            z-index: 1;
-            max-width: 360px;
-        }
-
-        .al-brand-icon {
-            width: 54px;
-            height: 54px;
-            background: rgba(30, 122, 70, 0.15);
-            border: 1px solid rgba(30, 122, 70, 0.4);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 28px;
-        }
-
-        .al-brand-icon svg {
-            width: 27px;
-            height: 27px;
-            stroke: #1e7a46;
-            stroke-width: 1.8;
-            fill: none;
-        }
-
-        .al-brand-content h2 {
-            font-family: "Space Grotesk", var(--font-display, sans-serif);
-            font-size: 1.95rem;
-            font-weight: 700;
-            color: #eef1ea;
-            letter-spacing: -0.02em;
-            margin-bottom: 14px;
-            line-height: 1.2;
-        }
-
-        .al-brand-content>p {
-            font-size: 1.05rem;
-            color: rgba(238, 241, 234, 0.6);
-            line-height: 1.65;
-            margin-bottom: 36px;
-        }
-
-        .al-feature-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .al-feature-list li {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1rem;
-            color: rgba(238, 241, 234, 0.75);
-            font-weight: 500;
-        }
-
-        .al-feature-list li svg {
-            width: 16px;
-            height: 16px;
-            stroke: var(--route-green);
-            stroke-width: 2;
-            fill: none;
-            flex-shrink: 0;
-        }
-
-        /* ============================================
-   Form Panel (Right)
-   ============================================ */
-        .al-panel-form {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 48px;
-        }
-
-        .al-form-wrap {
-            width: 100%;
-            max-width: 400px;
-            opacity: 0;
-            transform: translateY(16px);
-            transition:
-                opacity 0.45s ease,
-                transform 0.45s ease;
-        }
-
-        .al-form-wrap.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ============================================
-   Form Header
-   ============================================ */
-        .al-form-header {
-            margin-bottom: 30px;
-        }
-
-        .al-lock-icon {
-            width: 46px;
-            height: 46px;
-            background: var(--route-green-tint);
-            border: 1px solid rgba(30, 122, 70, 0.2);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .al-lock-icon svg {
-            width: 23px;
-            height: 23px;
-            stroke: var(--route-green);
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .al-form-header h1 {
-            font-family: "Space Grotesk", var(--font-display, sans-serif);
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--ink);
-            letter-spacing: -0.02em;
-            margin-bottom: 8px;
-        }
-
-        .al-form-header p {
-            font-size: 1rem;
-            color: var(--asphalt);
-        }
-
-        /* ============================================
-   Alert Banners
-   ============================================ */
-        .al-alert {
+        .brand {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 13px 15px;
-            border-radius: 10px;
-            font-size: 0.92rem;
-            font-weight: 500;
-            margin-bottom: 18px;
-            animation: alertSlideIn 0.25s ease;
+            position: relative;
+            z-index: 1;
+            text-decoration: none;
+            color: #fff;
         }
 
-        @keyframes alertSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-6px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .al-alert svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            stroke-width: 1.8;
-            fill: none;
+        .logo-mark {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--forest-light), var(--amber));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
             flex-shrink: 0;
         }
 
-        .al-alert-error {
-            background: rgba(220, 38, 38, 0.07);
-            border: 1px solid rgba(220, 38, 38, 0.2);
-            color: #b91c1c;
+        .brand span {
+            font-weight: 700;
+            font-size: 1.2rem;
         }
 
-        .al-alert-success {
-            background: rgba(30, 122, 70, 0.07);
-            border: 1px solid rgba(30, 122, 70, 0.2);
-            color: var(--route-green-deep);
-        }
-
-        /* ============================================
-   Form Fields
-   ============================================ */
-        .al-form {
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
-
-        .al-field {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .al-field label {
-            font-family: "Space Grotesk", var(--font-display, sans-serif);
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: var(--ink);
-            letter-spacing: 0.01em;
-        }
-
-        .al-input {
-            width: 100%;
-            background: #fff;
-            border: 1.5px solid #d8e0d8;
-            border-radius: 10px;
-            padding: 13px 15px;
-            font-family: "Inter", var(--font-body, sans-serif);
-            font-size: 1rem;
-            color: var(--ink);
-            outline: none;
-            transition:
-                border-color 0.2s,
-                box-shadow 0.2s;
-            caret-color: var(--route-green);
-        }
-
-        .al-input::placeholder {
-            color: #b0b8b0;
-        }
-
-        .al-input:focus {
-            border-color: var(--route-green);
-            box-shadow: 0 0 0 3px rgba(30, 122, 70, 0.1);
-        }
-
-        .al-input.shake {
-            border-color: #dc2626;
-            animation: fieldShake 0.4s ease;
-        }
-
-        @keyframes fieldShake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            20% {
-                transform: translateX(-6px);
-            }
-
-            40% {
-                transform: translateX(6px);
-            }
-
-            60% {
-                transform: translateX(-4px);
-            }
-
-            80% {
-                transform: translateX(4px);
-            }
-        }
-
-        /* Password wrapper */
-        .al-pw-wrap {
+        .panel-copy {
             position: relative;
+            z-index: 1;
+            max-width: 420px;
         }
 
-        .al-pw-wrap .al-input {
-            padding-right: 46px;
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .78rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 18px;
+            display: inline-block;
         }
 
-        .al-eye-btn {
+        .panel-copy h1 {
+            font-size: 2.6rem;
+            line-height: 1.12;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .panel-copy h1 .accent {
+            color: var(--amber);
+        }
+
+        .panel-copy p {
+            color: rgba(255, 255, 255, .78);
+            font-size: 1.02rem;
+            line-height: 1.55;
+        }
+
+        .perk-list {
+            list-style: none;
+            margin-top: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .perk-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: rgba(255, 255, 255, .88);
+            font-size: .95rem;
+        }
+
+        .perk-check {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(242, 169, 59, .18);
+            color: var(--amber);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .8rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .panel-foot {
+            position: relative;
+            z-index: 1;
+            font-size: .85rem;
+            color: rgba(255, 255, 255, .55);
+        }
+
+        /* ===== Right form panel ===== */
+        .panel-form {
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 56px 48px;
+        }
+
+        .form-wrap {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .form-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 36px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 18px;
+            font-size: .88rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--forest);
+        }
+
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--forest), var(--forest-light));
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            box-shadow: 0 .5rem 1.5rem rgba(30, 122, 70, .35);
+        }
+
+        .form-wrap h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-wrap>p.lead {
+            color: var(--muted);
+            font-size: .95rem;
+            margin-bottom: 32px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+
+        .field label {
+            display: block;
+            font-weight: 600;
+            font-size: .85rem;
+            margin-bottom: 7px;
+            color: var(--ink);
+        }
+
+        .input-shell {
+            position: relative;
+            border: 1.5px solid #e1e7de;
+            border-radius: 12px;
+            transition: border-color .2s, box-shadow .2s;
+            background: #fbfcfa;
+        }
+
+        .input-shell:focus-within {
+            border-color: var(--forest);
+            box-shadow: 0 0 0 4px rgba(30, 122, 70, .1);
+            background: #fff;
+        }
+
+        .input-shell input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 13px 14px;
+            font-family: inherit;
+            font-size: .96rem;
+            border-radius: 12px;
+            outline: none;
+        }
+
+        .input-shell.has-toggle input {
+            padding-right: 42px;
+        }
+
+        .toggle-pass {
             position: absolute;
             right: 12px;
             top: 50%;
             transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 1.05rem;
+            user-select: none;
             background: none;
             border: none;
-            cursor: pointer;
+            line-height: 1;
             padding: 4px;
-            color: #b0b8b0;
-            display: flex;
-            align-items: center;
-            transition: color 0.18s;
         }
 
-        .al-eye-btn:hover {
-            color: var(--route-green);
+        .toggle-pass:hover {
+            color: var(--forest);
         }
 
-        .al-eye-btn svg {
-            width: 18px;
-            height: 18px;
-            stroke: currentColor;
-            stroke-width: 1.8;
-            fill: none;
-        }
-
-        /* ============================================
-   Sign In Button
-   ============================================ */
-        .al-submit {
-            margin-top: 4px;
+        .btn-submit {
             width: 100%;
-            padding: 14px 20px;
-            background: var(--route-green);
+            padding: 15px;
+            border-radius: 12px;
             border: none;
-            border-radius: 10px;
-            font-family: "Space Grotesk", var(--font-display, sans-serif);
-            font-size: 1rem;
-            font-weight: 700;
-            color: #fff;
             cursor: pointer;
+            background: var(--forest);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 4px 14px rgba(30, 122, 70, 0.28);
-            transition:
-                background 0.18s,
-                transform 0.18s,
-                box-shadow 0.18s;
+            transition: background .2s, transform .2s;
+            margin-top: 8px;
         }
 
-        .al-submit:hover:not(:disabled) {
-            background: var(--route-green-deep);
+        .btn-submit:hover {
+            background: var(--forest-dark);
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(30, 122, 70, 0.35);
         }
 
-        .al-submit:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .al-submit:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
-        }
-
-        .al-submit.is-success {
-            background: #15803d;
-        }
-
-        .al-submit svg {
-            width: 17px;
-            height: 17px;
-            stroke: currentColor;
-            stroke-width: 2.2;
-            fill: none;
-            transition: transform 0.18s;
-        }
-
-        .al-submit:hover svg {
-            transform: translateX(3px);
-        }
-
-        /* ============================================
-   Credentials Hint
-   ============================================ */
-        .al-hint {
-            margin-top: 20px;
-            font-family: "JetBrains Mono", var(--font-mono, monospace);
-            font-size: 0.8rem;
-            color: var(--asphalt);
+        .form-bottom-note {
             text-align: center;
-            opacity: 0.75;
+            margin-top: 22px;
+            font-size: .87rem;
+            color: var(--muted);
         }
 
-        .al-hint code {
-            background: rgba(30, 122, 70, 0.08);
-            border-radius: 4px;
-            padding: 1px 6px;
-            color: var(--route-green-deep);
-            font-size: 0.82rem;
-        }
-
-        /* ============================================
-   Divider
-   ============================================ */
-        .al-divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 22px 0;
-            color: #c8d0c8;
-            font-size: 0.82rem;
-            font-family: "JetBrains Mono", var(--font-mono, monospace);
-        }
-
-        .al-divider::before,
-        .al-divider::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: #e0e8e0;
-        }
-
-        /* ============================================
-   Secondary Link
-   ============================================ */
-        .al-secondary-link {
-            display: block;
-            text-align: center;
-            font-size: 0.92rem;
-            font-weight: 500;
-            color: var(--asphalt);
+        .form-bottom-note a {
+            font-weight: 600;
             text-decoration: none;
-            transition: color 0.18s;
         }
 
-        .al-secondary-link:hover {
-            color: var(--route-green);
-        }
-
-        /* ============================================
-   Responsive — stack on mobile
-   ============================================ */
-        @media (max-width: 768px) {
-            .al-main {
+        /* ===== Responsive ===== */
+        @media (max-width: 980px) {
+            .page {
                 grid-template-columns: 1fr;
             }
 
-            .al-panel-brand {
+            .panel-visual {
+                padding: 40px 32px;
+                min-height: 280px;
+            }
+
+            .panel-copy h1 {
+                font-size: 2rem;
+            }
+
+            .perk-list {
+                display: none;
+            }
+
+            .panel-form {
                 padding: 40px 28px;
-            }
-
-            .al-brand-content h2 {
-                font-size: 1.5rem;
-            }
-
-            .al-panel-form {
-                padding: 40px 24px;
             }
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            .al-form-wrap {
-                transition: none;
-                opacity: 1;
-                transform: none;
+        @media (max-width: 480px) {
+            .form-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
             }
         }
     </style>
 </head>
 
-<body class="al-body">
+<body>
 
-    <!-- Subtle gradient background -->
-    <div class="al-bg" aria-hidden="true"></div>
+    <div class="page">
 
-    <!-- Navbar -->
-    <nav class="al-nav">
-        <div class="al-nav-inner">
-            <a class="al-logo" href="index.html">
-                <img src="./Resource/Logo.png" alt="Cit-E Cycling">
+        <!-- LEFT: brand / visual panel -->
+        <div class="panel-visual">
+            <a class="brand" href="index.html" aria-label="Cit-E Cycling home">
+                <span class="logo-mark">🚴</span>
                 <span>Cit-E Cycling</span>
             </a>
-            <a href="index.html" class="al-nav-link">← Back to site</a>
-        </div>
-    </nav>
 
-    <!-- Page body -->
-    <main class="al-main">
+            <div class="panel-copy">
+                <span class="eyebrow">Admin access</span>
+                <h1>Manage the <span class="accent">ride</span>, end to end.</h1>
+                <p>Sign in to review registrations, search and manage participants, and keep every
+                    Cit-E Cycling event running smoothly.</p>
 
-        <!-- Left panel — branding -->
-        <div class="al-panel al-panel-brand">
-            <div class="al-brand-content">
-                <div class="al-brand-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke-width="1.5" />
-                        <path d="M8 12l2.5 2.5L16 9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                    </svg>
-                </div>
-                <h2>Administration Portal</h2>
-                <p>Manage routes, riders and city rollouts from one place.</p>
-                <ul class="al-feature-list">
-                    <li>
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="1.8" />
-                        </svg>
-                        View registered riders
-                    </li>
-                    <li>
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="1.8" />
-                        </svg>
-                        Manage city rollouts
-                    </li>
-                    <li>
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="1.8" />
-                        </svg>
-                        Review route data
-                    </li>
+                <ul class="perk-list">
+                    <li><span class="perk-check">&check;</span> View and search participant records</li>
+                    <li><span class="perk-check">&check;</span> Edit scores and event details</li>
+                    <li><span class="perk-check">&check;</span> Keep registrations secure and organised</li>
                 </ul>
             </div>
+
+            <p class="panel-foot">&copy; 2026 Cit-E Cycling &mdash; Built for riders, by riders.</p>
         </div>
 
-        <!-- Right panel — form -->
-        <div class="al-panel al-panel-form">
-            <div class="al-form-wrap" id="alCard">
+        <!-- RIGHT: form panel -->
+        <div class="panel-form">
+            <div class="form-wrap">
 
-                <div class="al-form-header">
-                    <div class="al-lock-icon">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <rect x="3" y="11" width="18" height="11" rx="2" stroke-width="1.8" />
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4" stroke-width="1.8" />
-                            <circle cx="12" cy="16.5" r="1.2" fill="currentColor" stroke="none" />
-                        </svg>
+                <div class="form-top">
+                    <a href="index.html"
+                        style="text-decoration:none; color:var(--muted); font-weight:600; font-size:.88rem;">&larr;
+                        Home</a>
+                    <div class="nav-links">
+                        <a href="register_form.html">Register</a>
+                        <a href="admin_login.html" class="active">Admin login</a>
                     </div>
-                    <h1>Sign in</h1>
-                    <p>Enter your admin credentials to continue.</p>
                 </div>
 
-                <!-- Error -->
-                <div class="al-alert al-alert-error" id="alError" hidden>
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke-width="1.8" />
-                        <path d="M12 8v4M12 16h.01" stroke-linecap="round" stroke-width="2" />
-                    </svg>
-                    <span id="alErrorMsg">Invalid credentials.</span>
-                </div>
+                <div class="icon-circle">🔒</div>
+                <h2>Admin Login</h2>
+                <p class="lead">Sign in to manage participants and events.</p>
 
-                <!-- Success -->
-                <div class="al-alert al-alert-success" id="alSuccess" hidden>
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke-width="1.8" />
-                        <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                    </svg>
-                    <span>Welcome back! Redirecting…</span>
-                </div>
+                <form action="login.php" method="POST">
 
-                <form class="al-form" id="alForm" method="POST" action="login.php" novalidate>
-
-                    <div class="al-field">
+                    <div class="field">
                         <label for="username">Username</label>
-                        <input type="text" id="username" name="username" class="al-input"
-                            placeholder="Enter your username" required autocomplete="username" autofocus>
-                    </div>
-
-                    <div class="al-field">
-                        <label for="password">Password</label>
-                        <div class="al-pw-wrap">
-                            <input type="password" id="password" name="password" class="al-input"
-                                placeholder="Enter your password" required autocomplete="current-password">
-                            <button type="button" class="al-eye-btn" id="alEye" aria-label="Show password">
-                                <svg id="eyeShow" viewBox="0 0 24 24" fill="none">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke-width="1.8" />
-                                    <circle cx="12" cy="12" r="3" stroke-width="1.8" />
-                                </svg>
-                                <svg id="eyeHide" viewBox="0 0 24 24" fill="none" style="display:none">
-                                    <path
-                                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22"
-                                        stroke-width="1.8" stroke-linecap="round" />
-                                </svg>
-                            </button>
+                        <div class="input-shell">
+                            <input type="text" id="username" name="username" placeholder="Enter your username" required>
                         </div>
                     </div>
 
-                    <button type="submit" class="al-submit" id="alSubmit">
-                        <span id="alSubmitLabel">Sign In</span>
-                        <svg id="alSubmitArrow" viewBox="0 0 24 24" fill="none">
-                            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"
-                                stroke-width="2" />
-                        </svg>
-                    </button>
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <div class="input-shell has-toggle">
+                            <input type="password" id="password" name="password" placeholder="Enter your password"
+                                required>
+                            <button type="button" class="toggle-pass" id="togglePass"
+                                aria-label="Show password">&#128065;</button>
+                        </div>
+                    </div>
 
+                    <button class="btn-submit" type="submit">
+                        Login <span aria-hidden="true">&rarr;</span>
+                    </button>
                 </form>
 
-                <div class="al-divider"><span>or</span></div>
-
-                <a href="register_form.html" class="al-secondary-link">Register your interest instead →</a>
-
+                <p class="form-bottom-note">Not an admin? <a href="register_form.html">Register your interest
+                        instead</a></p>
             </div>
         </div>
 
-    </main>
+    </div>
 
     <script>
+        const toggleBtn = document.getElementById('togglePass');
+        const passInput = document.getElementById('password');
+        toggleBtn.addEventListener('click', () => {
+            const isHidden = passInput.type === 'password';
+            passInput.type = isHidden ? 'text' : 'password';
+            toggleBtn.innerHTML = isHidden ? '&#128064;' : '&#128065;';
+            toggleBtn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+        });
+    </script>
+
+    <!-- ===== DEV-ONLY AUTO-RELOAD (remove before submission) =====
+         Polls this page's Last-Modified header every second and
+         reloads automatically when the file changes on save —
+         mimics Live Server's auto-reload while running through XAMPP. -->
+    <script>
         (function () {
-            const form = document.getElementById('alForm');
-            const submit = document.getElementById('alSubmit');
-            const label = document.getElementById('alSubmitLabel');
-            const arrow = document.getElementById('alSubmitArrow');
-            const errBox = document.getElementById('alError');
-            const errMsg = document.getElementById('alErrorMsg');
-            const eyeBtn = document.getElementById('alEye');
-            const userInput = document.getElementById('username');
-            const pwInput = document.getElementById('password');
-            const card = document.getElementById('alCard');
-
-            // Entrance
-            requestAnimationFrame(() => card.classList.add('is-visible'));
-
-            // Eye toggle
-            eyeBtn.addEventListener('click', () => {
-                const show = pwInput.type === 'password';
-                pwInput.type = show ? 'text' : 'password';
-                document.getElementById('eyeShow').style.display = show ? 'none' : '';
-                document.getElementById('eyeHide').style.display = show ? '' : 'none';
-            });
-
-            // Input — clear errors on type
-            form.querySelectorAll('.al-input').forEach(inp => {
-                inp.addEventListener('input', () => { errBox.hidden = true; });
-            });
-
-            function showError(msg, shakeId) {
-                setLoading(false);
-                errMsg.textContent = msg;
-                errBox.hidden = false;
-                shake(shakeId);
-            }
-
-            // On page load, check if login.php redirected back with an error
-            const params = new URLSearchParams(window.location.search);
-            const serverError = params.get('error');
-            if (serverError === 'empty') {
-                showError('Please enter both your username and password.', 'username');
-            } else if (serverError === 'invalid') {
-                showError('Incorrect username or password.', 'password');
-            }
-
-            // Submit: validate client-side, then allow normal POST to server (login.php)
-            form.addEventListener('submit', e => {
-                const user = userInput.value.trim();
-                const pass = pwInput.value;
-
-                errBox.hidden = true;
-
-                // Validate empty fields before submitting
-                if (!user && !pass) {
-                    e.preventDefault();
-                    showError('Please enter your username and password.', 'username');
-                    return;
+            let lastModified = null;
+            async function checkForChanges() {
+                try {
+                    const res = await fetch(window.location.href, { method: 'HEAD', cache: 'no-store' });
+                    const modified = res.headers.get('Last-Modified');
+                    if (modified) {
+                        if (lastModified === null) {
+                            lastModified = modified;
+                        } else if (modified !== lastModified) {
+                            window.location.reload();
+                        }
+                    }
+                } catch (e) {
+                    // server not reachable right now, just skip this check
                 }
-                if (!user) {
-                    e.preventDefault();
-                    showError('Please enter your username.', 'username');
-                    return;
-                }
-                if (!pass) {
-                    e.preventDefault();
-                    showError('Please enter your password.', 'password');
-                    return;
-                }
-
-                // Show loading state and allow form to submit to server
-                setLoading(true);
-            });
-
-            function setLoading(on) {
-                submit.disabled = on;
-                label.textContent = on ? 'Signing in…' : 'Sign In';
-                arrow.style.display = on ? 'none' : '';
             }
-
-            function shake(inputId) {
-                const el = document.getElementById(inputId);
-                if (!el) return;
-                el.classList.remove('shake');
-                void el.offsetWidth;
-                el.classList.add('shake');
-                el.addEventListener('animationend', () => el.classList.remove('shake'), { once: true });
-            }
+            setInterval(checkForChanges, 1000);
         })();
     </script>
+    <!-- ===== END DEV-ONLY AUTO-RELOAD ===== -->
 
 </body>
 

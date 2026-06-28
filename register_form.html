@@ -1,961 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Your Interest — Cit-E Cycling</title>
+    <title>Register Interest — Cit-E Cycling</title>
     <link rel="icon" href="./Resource/Logo.png" type="image/png" sizes="32x32">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="index.css">
-
-    <link rel="stylesheet" href="register_form.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* ============================================
-   Page Foundation
-   ============================================ */
-        .rf-body {
-            min-height: 100vh;
-            background: #f5f7f5;
-            display: flex;
-            flex-direction: column;
-            font-family: var(--font-body);
-            overflow-x: hidden;
-        }
-
-        .rf-bg {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            background:
-                radial-gradient(ellipse 70% 55% at 85% 15%,
-                    rgba(242, 169, 59, 0.07) 0%,
-                    transparent 60%),
-                radial-gradient(ellipse 60% 50% at 15% 85%,
-                    rgba(30, 122, 70, 0.06) 0%,
-                    transparent 60%),
-                #f5f7f5;
-            pointer-events: none;
-        }
-
-        /* ============================================
-   Top Navigation Bar
-   ============================================ */
-        .rf-nav {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(30, 122, 70, 0.1);
-            padding: 0 32px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-        }
-
-        .rf-nav-inner {
-            width: 100%;
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .rf-logo {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            text-decoration: none;
-        }
-
-        .rf-logo img {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 1.5px solid var(--route-green);
-            object-fit: cover;
-        }
-
-        .rf-logo span {
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 0.95rem;
-            color: var(--ink);
-            letter-spacing: -0.01em;
-        }
-
-        .rf-nav-link {
-            font-family: var(--font-mono);
-            font-size: 0.78rem;
-            color: var(--asphalt);
-            text-decoration: none;
-            letter-spacing: 0.02em;
-            transition: color 0.18s;
-        }
-
-        .rf-nav-link:hover {
-            color: var(--route-green);
-        }
-
-        /* ============================================
-   Two-Column Layout
-   ============================================ */
-        .rf-main {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* ============================================
-   Brand Panel (Left)
-   ============================================ */
-        .rf-panel-brand {
-            background: var(--ink);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 48px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .rf-panel-brand::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(ellipse 65% 55% at 15% 25%,
-                    rgba(242, 169, 59, 0.12) 0%,
-                    transparent 60%),
-                radial-gradient(ellipse 55% 50% at 85% 75%,
-                    rgba(30, 122, 70, 0.14) 0%,
-                    transparent 60%);
-            pointer-events: none;
-        }
-
-        .rf-panel-brand::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background-image:
-                repeating-linear-gradient(0deg,
-                    rgba(255, 255, 255, 0.02) 0px,
-                    rgba(255, 255, 255, 0.02) 1px,
-                    transparent 1px,
-                    transparent 60px),
-                repeating-linear-gradient(90deg,
-                    rgba(255, 255, 255, 0.02) 0px,
-                    rgba(255, 255, 255, 0.02) 1px,
-                    transparent 1px,
-                    transparent 60px);
-            pointer-events: none;
-        }
-
-        .rf-brand-content {
-            position: relative;
-            z-index: 1;
-            max-width: 340px;
-        }
-
-        .rf-brand-icon {
-            width: 52px;
-            height: 52px;
-            background: rgba(242, 169, 59, 0.12);
-            border: 1px solid rgba(242, 169, 59, 0.3);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 28px;
-        }
-
-        .rf-brand-icon svg {
-            width: 26px;
-            height: 26px;
-            stroke: var(--signal-amber);
-            stroke-width: 1.8;
-            fill: none;
-        }
-
-        .rf-brand-content h2 {
-            font-family: var(--font-display);
-            font-size: 1.65rem;
-            font-weight: 700;
-            color: #eef1ea;
-            letter-spacing: -0.02em;
-            margin-bottom: 12px;
-            line-height: 1.2;
-        }
-
-        .rf-brand-content>p {
-            font-size: 0.9rem;
-            color: rgba(238, 241, 234, 0.5);
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        /* Stats row */
-        .rf-stats {
-            display: flex;
-            align-items: center;
-            gap: 0;
-            margin-bottom: 30px;
-            padding: 18px 20px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-            border-radius: 12px;
-        }
-
-        .rf-stat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-        }
-
-        .rf-stat-val {
-            font-family: var(--font-display);
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--signal-amber);
-            letter-spacing: -0.01em;
-        }
-
-        .rf-stat-label {
-            font-family: var(--font-mono);
-            font-size: 0.62rem;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            color: rgba(238, 241, 234, 0.35);
-        }
-
-        .rf-stat-sep {
-            width: 1px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.08);
-            margin: 0 4px;
-        }
-
-        /* Feature list */
-        .rf-feature-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 13px;
-        }
-
-        .rf-feature-list li {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.88rem;
-            color: rgba(238, 241, 234, 0.6);
-        }
-
-        .rf-feature-list li svg {
-            width: 15px;
-            height: 15px;
-            stroke: var(--signal-amber);
-            stroke-width: 2;
-            fill: none;
-            flex-shrink: 0;
-        }
-
-        /* ============================================
-   Form Panel (Right)
-   ============================================ */
-        .rf-panel-form {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 48px 48px;
-        }
-
-        .rf-form-wrap {
-            width: 100%;
-            max-width: 400px;
-            opacity: 0;
-            transform: translateY(16px);
-            transition:
-                opacity 0.45s ease,
-                transform 0.45s ease;
-        }
-
-        .rf-form-wrap.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ============================================
-   Form Header
-   ============================================ */
-        .rf-form-header {
-            margin-bottom: 26px;
-        }
-
-        .rf-form-icon {
-            width: 44px;
-            height: 44px;
-            background: rgba(242, 169, 59, 0.1);
-            border: 1px solid rgba(242, 169, 59, 0.22);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 18px;
-        }
-
-        .rf-form-icon svg {
-            width: 22px;
-            height: 22px;
-            stroke: var(--signal-amber);
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-        }
-
-        .rf-form-header h1 {
-            font-family: var(--font-display);
-            font-size: 1.65rem;
-            font-weight: 700;
-            color: var(--ink);
-            letter-spacing: -0.02em;
-            margin-bottom: 6px;
-        }
-
-        .rf-form-header p {
-            font-size: 0.88rem;
-            color: var(--asphalt);
-        }
-
-        /* ============================================
-   Alert Banner
-   ============================================ */
-        .rf-alert {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 14px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            margin-bottom: 18px;
-            animation: rfAlertIn 0.25s ease;
-        }
-
-        @keyframes rfAlertIn {
-            from {
-                opacity: 0;
-                transform: translateY(-6px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .rf-alert svg {
-            width: 17px;
-            height: 17px;
-            stroke: currentColor;
-            stroke-width: 1.8;
-            fill: none;
-            flex-shrink: 0;
-        }
-
-        .rf-alert-error {
-            background: rgba(220, 38, 38, 0.07);
-            border: 1px solid rgba(220, 38, 38, 0.2);
-            color: #b91c1c;
-        }
-
-        /* ============================================
-   Form Fields
-   ============================================ */
-        .rf-form {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .rf-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-
-        .rf-field {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .rf-field label {
-            font-family: var(--font-display);
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--ink);
-            letter-spacing: 0.01em;
-        }
-
-        .rf-req {
-            color: var(--signal-amber);
-            font-size: 0.85rem;
-        }
-
-        .rf-optional {
-            font-weight: 400;
-            font-size: 0.75rem;
-            color: var(--asphalt);
-            opacity: 0.6;
-        }
-
-        .rf-input {
-            width: 100%;
-            background: #fff;
-            border: 1.5px solid #d8e0d8;
-            border-radius: 10px;
-            padding: 12px 14px;
-            font-family: var(--font-body);
-            font-size: 0.92rem;
-            color: var(--ink);
-            outline: none;
-            transition:
-                border-color 0.2s,
-                box-shadow 0.2s;
-            caret-color: var(--signal-amber);
-        }
-
-        .rf-input::placeholder {
-            color: #b0b8b0;
-        }
-
-        .rf-input:focus {
-            border-color: var(--signal-amber);
-            box-shadow: 0 0 0 3px rgba(242, 169, 59, 0.12);
-        }
-
-        .rf-input.shake {
-            border-color: #dc2626;
-            animation: rfShake 0.4s ease;
-        }
-
-        @keyframes rfShake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            20% {
-                transform: translateX(-6px);
-            }
-
-            40% {
-                transform: translateX(6px);
-            }
-
-            60% {
-                transform: translateX(-4px);
-            }
-
-            80% {
-                transform: translateX(4px);
-            }
-        }
-
-        /* ============================================
-   Custom Checkbox
-   ============================================ */
-        .rf-check {
-            display: flex;
-            align-items: flex-start;
-            gap: 11px;
-            cursor: pointer;
-        }
-
-        .rf-check input[type="checkbox"] {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .rf-check-box {
-            flex-shrink: 0;
-            width: 19px;
-            height: 19px;
-            background: #fff;
-            border: 1.5px solid #d8e0d8;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 1px;
-            transition:
-                background 0.18s,
-                border-color 0.18s,
-                box-shadow 0.18s;
-        }
-
-        .rf-check-box svg {
-            width: 10px;
-            height: 10px;
-            opacity: 0;
-            transform: scale(0.6);
-            transition:
-                opacity 0.18s,
-                transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .rf-check input:checked~.rf-check-box {
-            background: var(--route-green);
-            border-color: var(--route-green);
-            box-shadow: 0 0 0 3px rgba(30, 122, 70, 0.12);
-        }
-
-        .rf-check input:checked~.rf-check-box svg {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .rf-check-text {
-            font-size: 0.83rem;
-            color: var(--asphalt);
-            line-height: 1.5;
-        }
-
-        .rf-check-text a {
-            color: var(--route-green);
-            text-decoration: underline;
-            text-underline-offset: 2px;
-        }
-
-        /* ============================================
-   Submit Button
-   ============================================ */
-        .rf-submit {
-            width: 100%;
-            padding: 13px 20px;
-            background: var(--route-green);
-            border: none;
-            border-radius: 10px;
-            font-family: var(--font-display);
-            font-size: 0.93rem;
-            font-weight: 700;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-            box-shadow: 0 4px 14px rgba(30, 122, 70, 0.28);
-            transition:
-                background 0.18s,
-                transform 0.18s,
-                box-shadow 0.18s;
-            margin-top: 2px;
-        }
-
-        .rf-submit:hover:not(:disabled) {
-            background: var(--route-green-deep);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(30, 122, 70, 0.35);
-        }
-
-        .rf-submit:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .rf-submit:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
-        }
-
-        .rf-submit svg {
-            width: 16px;
-            height: 16px;
-            stroke: currentColor;
-            stroke-width: 2.2;
-            fill: none;
-            transition: transform 0.18s;
-        }
-
-        .rf-submit:hover svg {
-            transform: translateX(3px);
-        }
-
-        .rf-submit-outline {
-            background: transparent;
-            border: 1.5px solid rgba(30, 122, 70, 0.35);
-            color: var(--route-green);
-            box-shadow: none;
-            margin-top: 16px;
-        }
-
-        .rf-submit-outline:hover {
-            background: rgba(30, 122, 70, 0.05);
-            border-color: var(--route-green);
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* ============================================
-   Privacy Note
-   ============================================ */
-        .rf-privacy {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            font-family: var(--font-mono);
-            font-size: 0.73rem;
-            color: var(--asphalt);
-            opacity: 0.5;
-        }
-
-        .rf-privacy svg {
-            width: 12px;
-            height: 12px;
-            stroke: currentColor;
-            stroke-width: 1.8;
-            fill: none;
-        }
-
-        /* ============================================
-   Success State
-   ============================================ */
-        .rf-success {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 20px 0;
-            animation: rfSuccessIn 0.4s ease;
-        }
-
-        @keyframes rfSuccessIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .rf-success-icon {
-            width: 68px;
-            height: 68px;
-            background: rgba(30, 122, 70, 0.08);
-            border: 1.5px solid rgba(30, 122, 70, 0.25);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-
-        .rf-success-icon svg {
-            width: 32px;
-            height: 32px;
-            stroke: var(--route-green);
-            stroke-width: 2;
-            fill: none;
-        }
-
-        .rf-success h2 {
-            font-family: var(--font-display);
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--ink);
-            margin-bottom: 10px;
-        }
-
-        .rf-success p {
-            font-size: 0.9rem;
-            color: var(--asphalt);
-            line-height: 1.6;
-            max-width: 320px;
-            margin-bottom: 4px;
-        }
-
-        /* ============================================
-   Responsive — stack on mobile
-   ============================================ */
-        @media (max-width: 768px) {
-            .rf-main {
-                grid-template-columns: 1fr;
-            }
-
-            .rf-panel-brand {
-                padding: 40px 28px;
-            }
-
-            .rf-brand-content h2 {
-                font-size: 1.3rem;
-            }
-
-            .rf-panel-form {
-                padding: 40px 24px;
-            }
-
-            .rf-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .rf-form-wrap {
-                transition: none;
-                opacity: 1;
-                transform: none;
-            }
-        }
+:root{--green:#1e7a46;--green-deep:#145c34;--green-light:#2f9e5c;--green-tint:rgba(30,122,70,.1);--amber:#f2a93b;--ink:#101b2c;--ash:#5b6b63;--paper:#f4f7f3;--surface:#fff;--hairline:#e1e8df;--font:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--r:14px;--rl:22px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);color:var(--ink);background:var(--paper);min-height:100vh;-webkit-font-smoothing:antialiased}
+a{color:var(--green);text-decoration:none}
+a:hover{color:var(--green-deep)}
+img,svg{display:block}
+
+/* Page split */
+.page{min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr}
+
+/* ── Left brand panel ── */
+.panel-brand{position:relative;background:radial-gradient(ellipse 60% 50% at 15% 20%,rgba(242,169,59,.2) 0%,transparent 55%),radial-gradient(ellipse 55% 55% at 85% 80%,rgba(47,158,92,.28) 0%,transparent 55%),linear-gradient(155deg,var(--ink) 0%,var(--green-deep) 60%,var(--green) 100%);color:#fff;padding:48px 52px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+.panel-brand::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 64px),repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 1px,transparent 1px 64px);pointer-events:none}
+.brand-logo{display:flex;align-items:center;gap:11px;position:relative;z-index:1;color:#fff}
+.brand-logo-mark{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--green-light);overflow:hidden;flex-shrink:0}
+.brand-logo-mark img{width:100%;height:100%;object-fit:cover}
+.brand-logo span{font-weight:800;font-size:1rem;letter-spacing:-.01em}
+.brand-copy{position:relative;z-index:1;max-width:400px}
+.brand-eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);display:inline-block;margin-bottom:16px}
+.brand-copy h1{font-size:clamp(1.9rem,3vw,2.55rem);font-weight:800;line-height:1.12;margin-bottom:14px;letter-spacing:-.025em}
+.brand-copy h1 .accent{color:var(--amber)}
+.brand-copy p{color:rgba(255,255,255,.7);font-size:.95rem;line-height:1.6}
+.perk-list{list-style:none;margin-top:28px;display:flex;flex-direction:column;gap:13px;position:relative;z-index:1}
+.perk-list li{display:flex;align-items:flex-start;gap:11px;color:rgba(255,255,255,.82);font-size:.91rem;line-height:1.5}
+.perk-check{width:21px;height:21px;border-radius:50%;background:rgba(242,169,59,.15);border:1px solid rgba(242,169,59,.4);color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:800;flex-shrink:0;margin-top:1px}
+.brand-foot{position:relative;z-index:1;font-family:var(--mono);font-size:.72rem;color:rgba(255,255,255,.3);letter-spacing:.03em}
+
+/* ── Right form panel ── */
+.panel-form{background:var(--surface);display:flex;align-items:center;justify-content:center;padding:56px 52px}
+.form-wrap{width:100%;max-width:440px}
+.form-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px}
+.form-back{font-size:.86rem;font-weight:600;color:var(--ash);transition:color .18s}
+.form-back:hover{color:var(--ink)}
+.form-nav{display:flex;gap:18px;font-size:.86rem;font-weight:600}
+.form-nav a{color:var(--ash);transition:color .18s}
+.form-nav a:hover,.form-nav a.active{color:var(--green)}
+.form-heading{margin-bottom:26px}
+.form-heading h2{font-size:1.7rem;font-weight:800;letter-spacing:-.025em;margin-bottom:7px}
+.form-heading p{color:var(--ash);font-size:.92rem;line-height:1.55}
+
+/* Fields */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{margin-bottom:17px;display:flex;flex-direction:column;gap:7px}
+.field label{font-size:.82rem;font-weight:700;color:var(--ink);letter-spacing:.01em}
+.field-req{color:var(--amber)}
+.input-shell{position:relative;background:#fbfcfa;border:1.5px solid var(--hairline);border-radius:var(--r);transition:border-color .2s,box-shadow .2s,background .2s}
+.input-shell:focus-within{border-color:var(--green);box-shadow:0 0 0 4px rgba(30,122,70,.1);background:var(--surface)}
+.input-shell input{width:100%;border:none;background:transparent;padding:13px 14px;font-family:var(--font);font-size:.93rem;color:var(--ink);border-radius:var(--r);outline:none;caret-color:var(--green)}
+.input-shell input::placeholder{color:#a8b4a8}
+.field-error{font-size:.76rem;color:#dc2626;font-family:var(--mono);display:none}
+.field.show-error .field-error{display:block}
+.field.show-error .input-shell{border-color:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+
+/* Checkbox */
+.check-group{margin:4px 0 22px;display:flex;flex-direction:column;gap:6px}
+.check-label{display:flex;align-items:flex-start;gap:11px;cursor:pointer}
+.check-label input[type=checkbox]{position:absolute;opacity:0;width:0;height:0}
+.check-box{flex-shrink:0;width:20px;height:20px;background:#fbfcfa;border:1.5px solid var(--hairline);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:background .18s,border-color .18s,box-shadow .18s}
+.check-box svg{width:11px;height:11px;opacity:0;transform:scale(.5);transition:opacity .18s,transform .22s cubic-bezier(.34,1.56,.64,1)}
+.check-label input:checked~.check-box{background:var(--green);border-color:var(--green);box-shadow:0 0 0 3px rgba(30,122,70,.12)}
+.check-label input:checked~.check-box svg{opacity:1;transform:scale(1)}
+.check-group.show-error .check-box{border-color:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.1)}
+.check-text{font-size:.85rem;color:var(--ash);line-height:1.5}
+.check-text a{font-weight:700;color:var(--green)}
+.check-error{font-size:.76rem;color:#dc2626;font-family:var(--mono);display:none;padding-left:31px}
+.check-group.show-error .check-error{display:block}
+
+/* Error banner */
+.error-banner{display:none;align-items:center;gap:10px;padding:11px 14px;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.22);border-radius:10px;margin-bottom:18px;font-size:.85rem;font-weight:500;color:#b91c1c;animation:bannerIn .25s ease}
+.error-banner.visible{display:flex}
+@keyframes bannerIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.error-banner svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.8;fill:none;flex-shrink:0}
+
+/* Shake */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .42s ease}
+
+/* Submit */
+.btn-submit{width:100%;padding:14px 20px;background:var(--green);border:none;border-radius:var(--r);font-family:var(--font);font-size:.95rem;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 16px rgba(30,122,70,.28);transition:background .18s,transform .18s,box-shadow .18s}
+.btn-submit:hover:not(:disabled){background:var(--green-deep);transform:translateY(-1px);box-shadow:0 6px 22px rgba(30,122,70,.36)}
+.btn-submit:disabled{opacity:.65;cursor:not-allowed}
+.btn-submit svg{width:17px;height:17px;stroke:currentColor;stroke-width:2.2;fill:none;transition:transform .18s}
+.btn-submit:hover svg{transform:translateX(3px)}
+.form-bottom{text-align:center;margin-top:18px;font-size:.85rem;color:var(--ash)}
+.form-bottom a{font-weight:700}
+
+/* Responsive */
+@media(max-width:960px){.page{grid-template-columns:1fr}.panel-brand{padding:40px 32px}.perk-list{display:none}.panel-form{padding:40px 28px}}
+@media(max-width:480px){.field-row{grid-template-columns:1fr}.form-toprow{flex-direction:column;align-items:flex-start;gap:12px}.panel-form{padding:32px 20px}}
     </style>
 </head>
+<body>
+<div class="page">
 
-<body class="rf-body">
-
-    <div class="rf-bg" aria-hidden="true"></div>
-
-    <!-- Navbar -->
-    <nav class="rf-nav">
-        <div class="rf-nav-inner">
-            <a class="rf-logo" href="index.html">
-                <img src="./Resource/Logo.png" alt="Cit-E Cycling">
-                <span>Cit-E Cycling</span>
-            </a>
-            <a href="index.html" class="rf-nav-link">← Back to site</a>
+    <!-- Left brand panel -->
+    <div class="panel-brand">
+        <a class="brand-logo" href="index.html">
+            <div class="brand-logo-mark"><img src="./Resource/Logo.png" alt="Cit-E Cycling"></div>
+            <span>Cit-E Cycling</span>
+        </a>
+        <div class="brand-copy">
+            <span class="brand-eyebrow">Be first in line</span>
+            <h1>Ride the city,<br><span class="accent">differently</span>.</h1>
+            <p>Register your interest and we'll notify you the moment Cit-E opens routes, rides and memberships in your city.</p>
+            <ul class="perk-list">
+                <li><span class="perk-check">✓</span>Early access to curated city routes</li>
+                <li><span class="perk-check">✓</span>Priority invites to community rides</li>
+                <li><span class="perk-check">✓</span>Launch-day notification for your city</li>
+                <li><span class="perk-check">✓</span>No payment required to register</li>
+            </ul>
         </div>
-    </nav>
+        <p class="brand-foot">&copy; 2026 Cit-E Cycling — Built for riders, by riders.</p>
+    </div>
 
-    <!-- Page body -->
-    <main class="rf-main">
+    <!-- Right form panel -->
+    <div class="panel-form">
+        <div class="form-wrap">
 
-        <!-- Left panel — context -->
-        <div class="rf-panel rf-panel-brand">
-            <div class="rf-brand-content">
-                <div class="rf-brand-icon">
-                    <svg viewBox="0 0 24 24" fill="none">
-                        <path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z" stroke-width="1.8" />
-                        <circle cx="12" cy="10" r="2.5" stroke-width="1.8" />
-                    </svg>
+            <div class="form-toprow">
+                <a href="index.html" class="form-back">← Home</a>
+                <div class="form-nav">
+                    <a href="register_form.html" class="active">Register</a>
+                    <a href="admin_login.html">Admin login</a>
                 </div>
-                <h2>Be first in your city.</h2>
-                <p>Join the waitlist and we'll email you the moment Cit-E opens near you.</p>
-                <div class="rf-stats">
-                    <div class="rf-stat">
-                        <span class="rf-stat-val">1,200+</span>
-                        <span class="rf-stat-label">Riders registered</span>
-                    </div>
-                    <div class="rf-stat-sep"></div>
-                    <div class="rf-stat">
-                        <span class="rf-stat-val">4</span>
-                        <span class="rf-stat-label">Cities launching</span>
-                    </div>
-                    <div class="rf-stat-sep"></div>
-                    <div class="rf-stat">
-                        <span class="rf-stat-val">Free</span>
-                        <span class="rf-stat-label">To register</span>
-                    </div>
-                </div>
-                <ul class="rf-feature-list">
-                    <li>
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                        </svg>
-                        Priority launch notification
-                    </li>
-                    <li>
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                        </svg>
-                        Early access to route planning
-                    </li>
-                    <li>
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
-                        </svg>
-                        Help decide which city comes next
-                    </li>
-                </ul>
             </div>
-        </div>
 
-        <!-- Right panel — form -->
-        <div class="rf-panel rf-panel-form">
-            <div class="rf-form-wrap" id="rfCard">
-
-                <!-- Default form view -->
-                <div id="rfFormView">
-                    <div class="rf-form-header">
-                        <div class="rf-form-icon">
-                            <svg viewBox="0 0 24 24" fill="none">
-                                <circle cx="12" cy="8" r="4" stroke-width="1.8" />
-                                <path d="M4 21v-1a8 8 0 0 1 16 0v1" stroke-width="1.8" />
-                            </svg>
-                        </div>
-                        <h1>Register your interest</h1>
-                        <p>Takes less than 30 seconds.</p>
-                    </div>
-
-                    <!-- Error -->
-                    <div class="rf-alert rf-alert-error" id="rfError" hidden>
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="10" stroke-width="1.8" />
-                            <path d="M12 8v4M12 16h.01" stroke-linecap="round" stroke-width="2" />
-                        </svg>
-                        <span id="rfErrorMsg">Please fill in all required fields.</span>
-                    </div>
-
-                    <form class="rf-form" id="rfForm" novalidate>
-
-                        <div class="rf-row">
-                            <div class="rf-field">
-                                <label for="firstname">First Name <span class="rf-req">*</span></label>
-                                <input type="text" id="firstname" name="firstname" class="rf-input" placeholder="Alex"
-                                    required autocomplete="given-name">
-                            </div>
-                            <div class="rf-field">
-                                <label for="surname">Surname <span class="rf-req">*</span></label>
-                                <input type="text" id="surname" name="surname" class="rf-input" placeholder="Morgan"
-                                    required autocomplete="family-name">
-                            </div>
-                        </div>
-
-                        <div class="rf-field">
-                            <label for="email">Email Address <span class="rf-req">*</span></label>
-                            <input type="email" id="email" name="email" class="rf-input" placeholder="alex@example.com"
-                                required autocomplete="email">
-                        </div>
-
-                        <label class="rf-check">
-                            <input type="checkbox" id="terms" name="terms" value="yes" required>
-                            <span class="rf-check-box">
-                                <svg viewBox="0 0 12 10" fill="none">
-                                    <path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                            </span>
-                            <span class="rf-check-text">I agree to the <a href="#">terms and conditions</a> and consent
-                                to receive launch updates.</span>
-                        </label>
-
-                        <button type="submit" class="rf-submit" id="rfSubmit">
-                            <span id="rfSubmitLabel">Register My Interest</span>
-                            <svg id="rfSubmitArrow" viewBox="0 0 24 24" fill="none">
-                                <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" />
-                            </svg>
-                        </button>
-
-
-
-                    </form>
-                </div>
-
-                <!-- Success view (hidden initially) -->
-                <div id="rfSuccess" class="rf-success" hidden>
-                    <div class="rf-success-icon">
-                        <svg viewBox="0 0 24 24" fill="none">
-                            <circle cx="12" cy="12" r="10" stroke-width="1.8" />
-                            <path d="M8 12l3 3 5-5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" />
-                        </svg>
-                    </div>
-                    <h2>You're on the list!</h2>
-                    <p>We'll send your launch notification to <strong id="rfConfirmEmail"></strong>. Keep an eye on your
-                        inbox.</p>
-                    <a href="index.html" class="rf-submit rf-submit-outline">← Back to Home</a>
-                </div>
-
+            <div class="form-heading">
+                <h2>Register your interest</h2>
+                <p>Takes less than a minute. No payment, no spam — just one email when we launch.</p>
             </div>
+
+            <div class="error-banner" id="errorBanner">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke-linecap="round" stroke-width="2"/></svg>
+                <span id="errorBannerMsg">Please fix the errors below.</span>
+            </div>
+
+            <form action="register.php" method="POST" id="regForm" novalidate>
+
+                <div class="field-row">
+                    <div class="field" id="f-firstname">
+                        <label for="firstname">First name <span class="field-req">*</span></label>
+                        <div class="input-shell">
+                            <input type="text" id="firstname" name="firstname" placeholder="Jordan" required autocomplete="given-name">
+                        </div>
+                        <span class="field-error">First name is required.</span>
+                    </div>
+                    <div class="field" id="f-surname">
+                        <label for="surname">Surname <span class="field-req">*</span></label>
+                        <div class="input-shell">
+                            <input type="text" id="surname" name="surname" placeholder="Rivera" required autocomplete="family-name">
+                        </div>
+                        <span class="field-error">Surname is required.</span>
+                    </div>
+                </div>
+
+                <div class="field" id="f-email">
+                    <label for="email">Email address <span class="field-req">*</span></label>
+                    <div class="input-shell">
+                        <input type="email" id="email" name="email" placeholder="jordan@example.com" required autocomplete="email">
+                    </div>
+                    <span class="field-error">A valid email address is required.</span>
+                </div>
+
+                <div class="check-group" id="f-terms">
+                    <label class="check-label">
+                        <input type="checkbox" id="terms" name="terms" value="yes">
+                        <span class="check-box">
+                            <svg viewBox="0 0 12 10" fill="none">
+                                <path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        <span class="check-text">I agree to the <a href="#">Terms &amp; Conditions</a> of Cit-E Cycling</span>
+                    </label>
+                   
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span id="submitLabel">Register Interest</span>
+                    <svg id="submitArrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+
+            </form>
+
+            <p class="form-bottom">Part of the team? <a href="admin_login.html">Sign in to the admin dashboard</a></p>
+
         </div>
+    </div>
+</div>
 
-    </main>
+<script>
+(function(){
+    var form=document.getElementById('regForm');
+    var btn=document.getElementById('submitBtn');
+    var btnLabel=document.getElementById('submitLabel');
+    var btnArrow=document.getElementById('submitArrow');
+    var banner=document.getElementById('errorBanner');
+    var bannerMsg=document.getElementById('errorBannerMsg');
 
-    <script>
-        (function () {
-            const form = document.getElementById('rfForm');
-            const submit = document.getElementById('rfSubmit');
-            const label = document.getElementById('rfSubmitLabel');
-            const arrow = document.getElementById('rfSubmitArrow');
-            const errBox = document.getElementById('rfError');
-            const errMsg = document.getElementById('rfErrorMsg');
-            const card = document.getElementById('rfCard');
+    document.getElementById('firstname').addEventListener('input',function(){clearErr('f-firstname');});
+    document.getElementById('surname').addEventListener('input',function(){clearErr('f-surname');});
+    document.getElementById('email').addEventListener('input',function(){clearErr('f-email');hideBanner();});
+    document.getElementById('terms').addEventListener('change',function(){clearErr('f-terms');hideBanner();});
 
-            // Entrance animation
-            requestAnimationFrame(() => card.classList.add('is-visible'));
+    form.addEventListener('submit',function(e){
+        e.preventDefault();
+        var first=document.getElementById('firstname').value.trim();
+        var last=document.getElementById('surname').value.trim();
+        var email=document.getElementById('email').value.trim();
+        var terms=document.getElementById('terms').checked;
+        var errors=[];
 
-            // Focus glow on inputs
-            document.querySelectorAll('.rf-input').forEach(inp => {
-                inp.addEventListener('input', () => { errBox.hidden = true; });
-            });
+        ['f-firstname','f-surname','f-email','f-terms'].forEach(clearErr);
+        hideBanner();
 
-            document.getElementById('terms').addEventListener('change', () => { errBox.hidden = true; });
+        if(!first){markErr('f-firstname');errors.push('first');}
+        if(!last){markErr('f-surname');errors.push('last');}
+        if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){markErr('f-email');errors.push('email');}
+        if(!terms){markErr('f-terms');errors.push('terms');}
 
-            // Submit handler
-            form.addEventListener('submit', e => {
-                e.preventDefault();
-
-                const first = document.getElementById('firstname').value.trim();
-                const last = document.getElementById('surname').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const terms = document.getElementById('terms').checked;
-
-                // Validate
-                if (!first) { showErr('First name is required.'); shake('firstname'); return; }
-                if (!last) { showErr('Surname is required.'); shake('surname'); return; }
-                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                    showErr('Please enter a valid email address.'); shake('email'); return;
-                }
-                if (!terms) { showErr('You must accept the terms and conditions.'); shake('terms'); return; }
-
-                errBox.hidden = true;
-                setLoading(true);
-
-                setTimeout(() => {
-                    document.getElementById('rfConfirmEmail').textContent = email;
-                    document.getElementById('rfFormView').hidden = true;
-                    document.getElementById('rfSuccess').hidden = false;
-                }, 900);
-            });
-
-            function showErr(msg) {
-                errMsg.textContent = msg;
-                errBox.hidden = false;
+        if(errors.length){
+            if(errors.length===1&&errors[0]==='terms'){
+                showBanner('You must tick the terms and conditions checkbox to continue.');
+            } else if(errors.indexOf('terms')>-1){
+                showBanner('Please fill in all required fields and accept the terms and conditions.');
+            } else {
+                showBanner('Please fill in all required fields before submitting.');
             }
+            return;
+        }
 
-            function setLoading(on) {
-                submit.disabled = on;
-                label.textContent = on ? 'Submitting…' : 'Register My Interest';
-                arrow.style.display = on ? 'none' : '';
-            }
+        btnLabel.textContent='Submitting…';
+        btnArrow.style.display='none';
+        btn.disabled=true;
+        form.submit();
+    });
 
-            function shake(id) {
-                const el = document.getElementById(id);
-                el.classList.remove('shake');
-                void el.offsetWidth;
-                el.classList.add('shake');
-                el.addEventListener('animationend', () => el.classList.remove('shake'), { once: true });
-            }
-        })();
-    </script>
-
+    function markErr(id){
+        var el=document.getElementById(id);
+        el.classList.add('show-error','shake');
+        el.addEventListener('animationend',function(){el.classList.remove('shake');},{once:true});
+    }
+    function clearErr(id){var el=document.getElementById(id);if(el)el.classList.remove('show-error','shake');}
+    function showBanner(msg){bannerMsg.textContent=msg;banner.classList.add('visible');window.scrollTo({top:0,behavior:'smooth'});}
+    function hideBanner(){banner.classList.remove('visible');}
+})();
+</script>
 </body>
-
 </html>

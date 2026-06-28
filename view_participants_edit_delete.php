@@ -1,429 +1,135 @@
+<?php include_once 'dbconnect.php'; ?>
+<style>
+.pm-topbar{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:0}
+.pm-filter-wrap{position:relative;min-width:260px}
+.pm-filter-wrap i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--ash)}
+.pm-filter{width:100%;border:1.5px solid var(--line);border-radius:50px;padding:10px 14px 10px 38px;font-family:var(--font);font-size:.88rem;color:var(--ink);outline:none;background:#fafcfa;transition:border-color .2s,box-shadow .2s}
+.pm-filter:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(30,122,70,.1)}
+
+.pm-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.pm-meta h3{font-size:.92rem;font-weight:800;margin:0}
+.pm-count{font-family:var(--mono);font-size:.72rem;font-weight:700;background:var(--gt);color:var(--gd);padding:5px 12px;border-radius:50px}
+
+.pm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.pm-card{
+  background:var(--surf);border:1px solid var(--line);border-radius:var(--rl);padding:22px;
+  opacity:0;transform:translateY(10px);animation:fadeUp .4s ease forwards;
+  transition:transform .2s,box-shadow .2s;
+}
+.pm-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(13,22,32,.1)}
+.pm-card-top{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.pm-av{width:46px;height:46px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--g),var(--gl));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.92rem}
+.pm-name{font-weight:800;font-size:1rem;margin:0 0 2px}
+.pm-id{font-family:var(--mono);font-size:.68rem;color:var(--ash)}
+.pm-email{display:flex;align-items:center;gap:7px;color:var(--ash);font-size:.82rem;margin-bottom:10px;word-break:break-all}
+.pm-club-tag{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:700;padding:5px 12px;border-radius:50px;margin-bottom:14px}
+.pm-club-tag.has{background:rgba(242,169,59,.14);color:var(--ad)}
+.pm-club-tag.none{background:var(--paper);color:var(--ash)}
+.pm-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.pm-stat{background:var(--paper);border-radius:10px;padding:10px 12px;text-align:center}
+.pm-stat-val{font-weight:800;font-size:1rem;display:block}
+.pm-stat-lbl{font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--ash)}
+.pm-actions{display:flex;gap:8px}
+.pm-btn{flex:1;padding:10px;border:none;border-radius:10px;font-family:var(--font);font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:.18s}
+.pm-btn-edit{background:var(--gt);color:var(--gd)}.pm-btn-edit:hover{background:var(--g);color:#fff;text-decoration:none}
+.pm-btn-del{background:rgba(220,53,69,.1);color:#c0392b}.pm-btn-del:hover{background:#dc3545;color:#fff}
+
+.pm-empty{text-align:center;padding:56px 20px;color:var(--ash);border:1px dashed var(--line);border-radius:var(--rl)}
+.pm-empty i{font-size:2.8rem;color:var(--line);display:block;margin-bottom:14px}
+
+/* SweetAlert overrides */
+.swal2-popup{border-radius:20px!important;font-family:var(--font)!important}
+.swal2-title{font-family:var(--font)!important;font-weight:800!important;color:var(--ink)!important}
+.swal2-html-container{color:var(--ash)!important}
+.swal2-confirm{border-radius:50px!important;font-weight:700!important;background:#dc3545!important;box-shadow:none!important;padding:10px 26px!important}
+.swal2-cancel{border-radius:50px!important;font-weight:700!important;background:var(--paper)!important;color:var(--ink)!important;box-shadow:none!important;padding:10px 26px!important}
+</style>
+
+<div class="pm-topbar topbar">
+  <div>
+    <span class="topbar-eyebrow">Participant records</span>
+    <h1>Manage Participants</h1>
+    <p>View, edit and delete participant records.</p>
+  </div>
+  <div class="pm-filter-wrap">
+    <i class="bi bi-search"></i>
+    <input type="text" id="pmFilter" class="pm-filter" placeholder="Filter by name, email or club…">
+  </div>
+</div>
+
+<div class="pm-meta">
+  <h3>All Participants</h3>
+  <span class="pm-count" id="pmCount"></span>
+</div>
+
 <?php
-include 'dbconnect.php';
-
-$conn = new PDO(
-    "mysql:host=$servername;port=$port;dbname=$database",
-    $username,
-    $password
-);
-$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-$participants = [];
-$error_msg = '';
-$info_msg = '';
-
-if (isset($_GET['status'])) {
-    if ($_GET['status'] === 'updated') {
-        $info_msg = 'Rider details successfully updated.';
-    } elseif ($_GET['status'] === 'deleted') {
-        $info_msg = 'Rider record successfully removed.';
-    } elseif ($_GET['status'] === 'notfound') {
-        $error_msg = 'Rider could not be found.';
-    } elseif ($_GET['status'] === 'error') {
-        $error_msg = 'An error occurred processing the action.';
-    }
-}
-
-if (!function_exists('db_get_participants')) {
-    function db_get_participants($conn) {
-        $stmt = $conn->prepare("SELECT * FROM participant");
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-}
-
-// Single call, wrapped in try/catch
 try {
-    $participants = db_get_participants($conn);
-} catch (Exception $e) {
-    $error_msg = 'Failed to retrieve participants: ' . $e->getMessage();
+  $pdo=new PDO("mysql:host=$servername;port=$port;dbname=$database;charset=utf8mb4",
+    $username,$password,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]);
+  $st=$pdo->query("SELECT p.*,c.name AS club_name FROM participant p
+     LEFT JOIN club c ON c.id=p.club_id ORDER BY p.firstname");
+  $rows=$st->fetchAll(PDO::FETCH_ASSOC);
+
+  if($rows){
+    echo '<div class="pm-grid" id="pmGrid">';
+    foreach($rows as $i=>$r){
+      $ini=strtoupper(substr($r['firstname'],0,1).substr($r['surname'],0,1));
+      $clubClass=$r['club_name']?'has':'none';
+      $clubName=$r['club_name']?htmlspecialchars($r['club_name']):'No club';
+      $search=strtolower($r['firstname'].' '.$r['surname'].' '.$r['email'].' '.($r['club_name']??''));
+      echo '<div class="pm-card" data-search="'.$search.'" style="animation-delay:'.($i*.035).'s">
+              <div class="pm-card-top">
+                <div class="pm-av">'.$ini.'</div>
+                <div>
+                  <p class="pm-name">'.htmlspecialchars($r['firstname'].' '.$r['surname']).'</p>
+                  <span class="pm-id">ID #'.$r['id'].'</span>
+                </div>
+              </div>
+              <div class="pm-email"><i class="bi bi-envelope-fill"></i>'.htmlspecialchars($r['email']).'</div>
+              <span class="pm-club-tag '.$clubClass.'"><i class="bi bi-flag-fill"></i>'.$clubName.'</span>
+              <div class="pm-stats">
+                <div class="pm-stat"><span class="pm-stat-val">'.$r['power_output'].'</span><span class="pm-stat-lbl">Power (W)</span></div>
+                <div class="pm-stat"><span class="pm-stat-val">'.$r['distance'].'</span><span class="pm-stat-lbl">Distance (km)</span></div>
+              </div>
+              <div class="pm-actions">
+                <a href="edit_participant.php?id='.$r['id'].'" class="pm-btn pm-btn-edit"><i class="bi bi-pencil-fill"></i> Edit</a>
+                <button class="pm-btn pm-btn-del" onclick="doDelete('.$r['id'].')"><i class="bi bi-trash3-fill"></i> Delete</button>
+              </div>
+            </div>';
+    }
+    echo '</div>';
+  } else {
+    echo '<div class="pm-empty"><i class="bi bi-inbox"></i><p>No participants found.</p></div>';
+  }
+} catch(PDOException $e){
+  echo '<div style="background:#fdecec;border:1px solid #f5c6cb;color:#8a1f28;border-radius:14px;padding:16px 20px;font-size:.9rem">'.htmlspecialchars($e->getMessage()).'</div>';
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Participant Directory — Cit-E Cycling</title>
-    <link rel="icon" href="./Resource/Logo.png" type="image/png" sizes="32x32">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(function(){
+  var grid=document.getElementById('pmGrid');
+  var countEl=document.getElementById('pmCount');
+  var cards=grid?Array.from(grid.querySelectorAll('.pm-card')):[];
+  function upd(n){if(countEl)countEl.textContent=n+(n===1?' record':' records');}
+  upd(cards.length);
+  var fi=document.getElementById('pmFilter');
+  if(fi&&grid){fi.addEventListener('input',function(){
+    var q=fi.value.trim().toLowerCase();var n=0;
+    cards.forEach(function(c){var m=c.getAttribute('data-search').includes(q);c.style.display=m?'':'none';if(m)n++;});
+    upd(n);
+  });}
+})();
 
-    <style>
-        /* ─── TOKENS ─────────────────────────────────────── */
-        :root {
-            --ink:        #0d0f0e;
-            --ink-mid:    #2a2e2c;
-            --asphalt:    #6b7270;
-            --fog:        #c8cecc;
-            --surface:    #f2f4f3;
-            --white:      #ffffff;
-            --volt:       #c8f53a;   /* signature: electric lime */
-            --volt-dark:  #9abf1e;
-            --danger:     #e05252;
-            --danger-bg:  #fdf1f1;
-            --success:    #2ea06e;
-            --success-bg: #edf8f3;
-            --info-bg:    #eef3ff;
-            --info-txt:   #3a5bd4;
-
-            --font-display: 'Syne', sans-serif;
-            --font-body:    'DM Sans', sans-serif;
-            --font-mono:    'DM Mono', monospace;
-
-            --radius-sm:  6px;
-            --radius-md:  12px;
-            --radius-lg:  20px;
-            --shadow-card: 0 2px 24px rgba(0,0,0,.07), 0 1px 4px rgba(0,0,0,.04);
-            --shadow-hover: 0 8px 32px rgba(0,0,0,.11);
-        }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--surface);
-            color: var(--ink);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        /* ─── AMBIENT ─────────────────────────────────────── */
-        .bg-decor { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(90px);
-            opacity: .28;
-        }
-        .blob-volt  { width: 520px; height: 520px; background: var(--volt);    top: -140px; right: -120px; }
-        .blob-ink   { width: 380px; height: 380px; background: #1a2020;        bottom: -80px; left: -80px; }
-        .blob-fog   { width: 300px; height: 300px; background: #a8c4be;        top: 55%; left: 40%; }
-
-        /* ─── NAVBAR ──────────────────────────────────────── */
-        .navbar {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(242, 244, 243, .82);
-            backdrop-filter: blur(18px);
-            border-bottom: 1px solid rgba(0,0,0,.07);
-        }
-        .nav-inner {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 32px; height: 64px;
-            max-width: 1100px; margin: 0 auto;
-        }
-        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .logo img { width: 32px; height: 32px; object-fit: contain; }
-        .logo-text {
-            font-family: var(--font-display);
-            font-weight: 800; font-size: 1.1rem;
-            color: var(--ink); letter-spacing: -.02em;
-        }
-        .logo-text span { color: var(--volt-dark); }
-        .nav-actions { display: flex; gap: 8px; align-items: center; }
-
-        .btn { display: inline-flex; align-items: center; gap: 6px; border-radius: var(--radius-sm); font-family: var(--font-body); font-weight: 600; cursor: pointer; text-decoration: none; transition: background .18s, color .18s, box-shadow .18s; border: 1.5px solid transparent; white-space: nowrap; }
-        .btn-sm { padding: 6px 14px; font-size: .82rem; }
-        .btn-ghost { background: transparent; border-color: var(--fog); color: var(--asphalt); }
-        .btn-ghost:hover { background: var(--white); color: var(--ink); border-color: var(--fog); }
-        .btn-danger-ghost { background: transparent; border-color: rgba(224,82,82,.35); color: var(--danger); }
-        .btn-danger-ghost:hover { background: var(--danger-bg); }
-
-        /* ─── LAYOUT ──────────────────────────────────────── */
-        main { flex: 1; position: relative; z-index: 1; padding: 40px 16px 80px; }
-        .container { max-width: 1000px; margin: 0 auto; width: 100%; }
-
-        /* ─── CARD ────────────────────────────────────────── */
-        .card {
-            background: rgba(255,255,255,.72);
-            backdrop-filter: blur(24px);
-            border: 1px solid rgba(255,255,255,.85);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-card);
-            padding: 40px 40px 32px;
-        }
-
-        /* ─── BACK LINK ───────────────────────────────────── */
-        .back-link {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: .82rem; font-weight: 600; color: var(--asphalt);
-            text-decoration: none; letter-spacing: .02em;
-            text-transform: uppercase; margin-bottom: 28px;
-            transition: color .15s;
-        }
-        .back-link:hover { color: var(--ink); }
-        .back-link::before { content: '←'; font-size: 1rem; }
-
-        /* ─── PAGE HEADER ─────────────────────────────────── */
-        .page-header { margin-bottom: 28px; }
-        .eyebrow {
-            font-family: var(--font-mono);
-            font-size: .72rem; font-weight: 500;
-            letter-spacing: .12em; text-transform: uppercase;
-            color: var(--volt-dark); margin-bottom: 8px;
-        }
-        .page-header h1 {
-            font-family: var(--font-display);
-            font-weight: 800; font-size: 2rem;
-            letter-spacing: -.03em; line-height: 1.1;
-            color: var(--ink); margin-bottom: 8px;
-        }
-        .page-header p { color: var(--asphalt); font-size: .9rem; max-width: 520px; }
-
-        /* ─── STAT PILLS ──────────────────────────────────── */
-        .stat-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
-        .stat-pill {
-            background: var(--surface);
-            border: 1px solid var(--fog);
-            border-radius: 999px;
-            padding: 6px 16px;
-            font-size: .8rem; font-weight: 600;
-            color: var(--ink-mid);
-            display: flex; align-items: center; gap: 6px;
-        }
-        .stat-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--volt-dark); }
-
-        /* ─── ALERTS ──────────────────────────────────────── */
-        .alert-box {
-            display: flex; align-items: flex-start; gap: 12px;
-            padding: 14px 18px; border-radius: var(--radius-md);
-            font-size: .875rem; margin-bottom: 24px;
-            border: 1px solid transparent;
-        }
-        .alert-box svg { flex-shrink: 0; margin-top: 1px; }
-        .alert-danger  { background: var(--danger-bg);  color: #b52727; border-color: rgba(224,82,82,.25); }
-        .alert-success { background: var(--success-bg); color: #1c7a52; border-color: rgba(46,160,110,.25); }
-        .alert-info    { background: var(--info-bg);    color: var(--info-txt); border-color: rgba(58,91,212,.2); }
-
-        /* ─── TABLE ───────────────────────────────────────── */
-        .table-wrap { overflow-x: auto; border-radius: var(--radius-md); border: 1px solid rgba(0,0,0,.07); }
-        table { width: 100%; border-collapse: collapse; font-size: .875rem; }
-        thead { background: var(--ink); }
-        thead th {
-            font-family: var(--font-display);
-            font-size: .7rem; font-weight: 700;
-            letter-spacing: .1em; text-transform: uppercase;
-            color: rgba(255,255,255,.6);
-            padding: 13px 18px; text-align: left;
-        }
-        thead th:first-child { border-radius: var(--radius-md) 0 0 0; }
-        thead th:last-child  { border-radius: 0 var(--radius-md) 0 0; }
-
-        tbody tr {
-            border-bottom: 1px solid rgba(0,0,0,.055);
-            transition: background .15s;
-        }
-        tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: rgba(200,245,58,.07); }
-
-        tbody td { padding: 14px 18px; vertical-align: middle; color: var(--ink-mid); }
-
-        .td-id {
-            font-family: var(--font-mono); font-size: .78rem;
-            color: var(--asphalt); font-weight: 500;
-        }
-        .td-name { font-weight: 600; color: var(--ink); }
-        .td-email { color: var(--asphalt); font-size: .84rem; }
-        .td-metric {
-            font-family: var(--font-mono); font-size: .84rem;
-            font-weight: 500;
-        }
-        .td-metric .unit { font-size: .72rem; color: var(--asphalt); margin-left: 2px; }
-        .td-empty { color: var(--fog); font-style: italic; font-size: .82rem; }
-
-        /* ─── ACTION BUTTONS ──────────────────────────────── */
-        .action-cell { display: flex; gap: 8px; align-items: center; }
-        .btn-edit, .btn-del {
-            display: inline-flex; align-items: center;
-            padding: 5px 13px; border-radius: var(--radius-sm);
-            font-size: .78rem; font-weight: 700;
-            letter-spacing: .02em; text-decoration: none;
-            transition: background .15s, color .15s, box-shadow .15s;
-            border: 1.5px solid transparent;
-        }
-        .btn-edit {
-            background: rgba(200,245,58,.18);
-            border-color: rgba(154,191,30,.4);
-            color: #5a7800;
-        }
-        .btn-edit:hover { background: var(--volt); color: var(--ink); border-color: var(--volt); box-shadow: 0 2px 10px rgba(200,245,58,.4); }
-        .btn-del {
-            background: var(--danger-bg);
-            border-color: rgba(224,82,82,.3);
-            color: var(--danger);
-        }
-        .btn-del:hover { background: var(--danger); color: var(--white); border-color: var(--danger); }
-
-        /* ─── EMPTY STATE ─────────────────────────────────── */
-        .empty-state {
-            text-align: center; padding: 60px 20px;
-        }
-        .empty-icon {
-            font-size: 2.8rem; margin-bottom: 14px;
-            filter: grayscale(.4);
-        }
-        .empty-state h3 {
-            font-family: var(--font-display);
-            font-size: 1.1rem; font-weight: 700;
-            color: var(--ink); margin-bottom: 8px;
-        }
-        .empty-state p { color: var(--asphalt); font-size: .88rem; }
-
-        /* ─── FOOTER ──────────────────────────────────────── */
-        footer {
-            position: relative; z-index: 1;
-            background: var(--ink); color: rgba(255,255,255,.45);
-            padding: 24px 32px;
-            display: flex; justify-content: space-between; align-items: center;
-            font-size: .8rem;
-        }
-        footer .volt-tag { color: var(--volt); font-weight: 600; font-family: var(--font-mono); font-size: .72rem; }
-
-        /* ─── RESPONSIVE ──────────────────────────────────── */
-        @media (max-width: 640px) {
-            .nav-inner { padding: 0 16px; }
-            .card { padding: 24px 18px 20px; }
-            .page-header h1 { font-size: 1.5rem; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="bg-decor" aria-hidden="true">
-        <span class="blob blob-volt"></span>
-        <span class="blob blob-ink"></span>
-        <span class="blob blob-fog"></span>
-    </div>
-
-    <!-- NAVBAR -->
-    <nav class="navbar" aria-label="Primary">
-        <div class="nav-inner">
-            <a class="logo" href="index.html" aria-label="Cit-E Cycling home">
-                <img src="./Resource/Logo.png" alt="Cit-E Cycling logo">
-                <span class="logo-text">Cit-E <span>Cycling</span></span>
-            </a>
-            <div class="nav-actions">
-                <a href="admin_menu.php" class="btn btn-sm btn-ghost">Dashboard</a>
-                <a href="admin_menu.php?action=logout" class="btn btn-sm btn-danger-ghost">Sign Out</a>
-            </div>
-        </div>
-    </nav>
-
-    <main>
-        <div class="container">
-            <div class="card">
-
-                <a href="admin_menu.php" class="back-link">Back to Dashboard</a>
-
-                <div class="page-header">
-                    <p class="eyebrow">Admin · Riders</p>
-                    <h1>Participant Directory</h1>
-                    <p>View, update scores (power and distance), or remove participant records.</p>
-                </div>
-
-                <!-- Stat pills -->
-                <?php if (!empty($participants)): ?>
-                <div class="stat-row">
-                    <span class="stat-pill">
-                        <span class="dot"></span>
-                        <?php echo count($participants); ?> Rider<?php echo count($participants) !== 1 ? 's' : ''; ?> Registered
-                    </span>
-                    <?php
-                        $with_data = array_filter($participants, fn($r) => $r['power_output'] !== null || $r['distance'] !== null);
-                    ?>
-                    <span class="stat-pill">
-                        <?php echo count($with_data); ?> with Performance Data
-                    </span>
-                </div>
-                <?php endif; ?>
-
-                <!-- Banners -->
-                <?php if ($error_msg !== ''): ?>
-                    <div class="alert-box alert-danger" role="alert">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                        <p><?php echo htmlspecialchars($error_msg); ?></p>
-                    </div>
-                <?php endif; ?>
-
-                <?php if ($info_msg !== ''): ?>
-                    <div class="alert-box alert-success" role="status">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                        <p><?php echo htmlspecialchars($info_msg); ?></p>
-                    </div>
-                <?php endif; ?>
-
-                <!-- Table or empty state -->
-                <?php if (empty($participants)): ?>
-                    <div class="empty-state">
-                        <div class="empty-icon">🚴</div>
-                        <h3>No riders yet</h3>
-                        <p>Interest submissions will appear here once approved.</p>
-                    </div>
-                <?php else: ?>
-                    <div class="table-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Rider Name</th>
-                                    <th>Email</th>
-                                    <th>Power (W)</th>
-                                    <th>Distance (km)</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($participants as $rider): ?>
-                                    <tr>
-                                        <td class="td-id"><?php echo htmlspecialchars($rider['id']); ?></td>
-                                        <td class="td-name"><?php echo htmlspecialchars($rider['firstname'] . ' ' . $rider['surname']); ?></td>
-                                        <td class="td-email"><?php echo htmlspecialchars($rider['email']); ?></td>
-                                        <td class="td-metric">
-                                            <?php if ($rider['power_output'] !== null): ?>
-                                                <?php echo htmlspecialchars($rider['power_output']); ?><span class="unit">W</span>
-                                            <?php else: ?>
-                                                <span class="td-empty">—</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="td-metric">
-                                            <?php if ($rider['distance'] !== null): ?>
-                                                <?php echo htmlspecialchars($rider['distance']); ?><span class="unit">km</span>
-                                            <?php else: ?>
-                                                <span class="td-empty">—</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <div class="action-cell">
-                                                <a href="edit_participant.php?id=<?php echo $rider['id']; ?>" class="btn-edit">Edit</a>
-                                                <a href="delete.php?id=<?php echo $rider['id']; ?>"
-                                                   class="btn-del"
-                                                   onclick="return confirm('Delete rider: <?php echo htmlspecialchars(addslashes($rider['firstname'] . ' ' . $rider['surname'])); ?>?');">
-                                                    Delete
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-
-            </div><!-- /card -->
-        </div><!-- /container -->
-    </main>
-
-    <footer>
-        <p>&copy; 2026 Cit-E Cycling. All rights reserved.</p>
-        <span class="volt-tag">Built for riders, by riders.</span>
-    </footer>
-
-</body>
-</html>
+function doDelete(id){
+  Swal.fire({
+    title:'Delete this participant?',
+    html:'This will permanently remove the record.<br><strong>This cannot be undone.</strong>',
+    icon:'warning',showCancelButton:true,reverseButtons:true,
+    confirmButtonText:'<i class="bi bi-trash3-fill"></i> Delete',
+    cancelButtonText:'Cancel',buttonsStyling:false,
+    customClass:{confirmButton:'swal2-confirm',cancelButton:'swal2-cancel'}
+  }).then(function(r){if(r.isConfirmed)window.location.href='delete.php?id='+id;});
+}
+</script>

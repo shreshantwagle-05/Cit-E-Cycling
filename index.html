@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cit-E Cycling — Ride the city, differently</title>
-    <link rel="icon" href="./Resource/Logo.png" type="image/png" sizes="42x42">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,11 +12,894 @@
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="index.css">
     <style>
-        
-    </style>
+        :root {
+            --forest: #1e7a46;
+            --forest-dark: #145c34;
+            --forest-light: #2f9e5c;
+            --amber: #f2a93b;
+            --amber-dark: #d88f1f;
+            --ink: #101b2c;
+            --ink-soft: #16243a;
+            --paper: #f4f7f3;
+            --muted: #5b6b63;
+            --glass-bg: rgba(255, 255, 255, 0.06);
+            --glass-border: rgba(255, 255, 255, 0.14);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--paper);
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .logo-text {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            letter-spacing: -0.01em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: -999px;
+            top: auto;
+        }
+
+        .skip-link:focus {
+            left: 16px;
+            top: 16px;
+            background: var(--ink);
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 8px;
+            z-index: 999;
+        }
+
+        /* Background decor blobs */
+        .bg-decor {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.35;
+        }
+
+        .blob-green {
+            width: 480px;
+            height: 480px;
+            background: var(--forest-light);
+            top: -120px;
+            left: -120px;
+        }
+
+        .blob-amber {
+            width: 380px;
+            height: 380px;
+            background: var(--amber);
+            top: 30%;
+            right: -140px;
+        }
+
+        .blob-ink {
+            width: 420px;
+            height: 420px;
+            background: var(--ink-soft);
+            bottom: -160px;
+            left: 30%;
+            opacity: 0.5;
+        }
+
+        /* Glass */
+        .glass {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .glass-dark {
+            background: rgba(16, 27, 44, 0.55);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* Reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal[data-reveal-delay="1"] {
+            transition-delay: .1s;
+        }
+
+        .reveal[data-reveal-delay="2"] {
+            transition-delay: .2s;
+        }
+
+        .reveal[data-reveal-delay="3"] {
+            transition-delay: .3s;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: .95rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: .25s ease;
+        }
+
+        .btn-sm {
+            padding: 9px 18px;
+            font-size: .85rem;
+        }
+
+        .btn-primary {
+            background: var(--amber);
+            color: var(--ink);
+        }
+
+        .btn-primary:hover {
+            background: var(--amber-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .3);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, .1);
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(16, 27, 44, 0.55);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            transition: background .3s ease;
+        }
+
+        .navbar.scrolled {
+            background: var(--ink);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 76px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .logo-mark {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--forest), var(--forest-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--amber);
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.15rem;
+            color: #fff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-admin {
+            color: rgba(255, 255, 255, .8);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: .92rem;
+        }
+
+        .nav-admin:hover {
+            color: var(--amber);
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+        }
+
+        .nav-toggle span {
+            width: 22px;
+            height: 2px;
+            background: #fff;
+            border-radius: 2px;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 110px;
+            padding-bottom: 60px;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(242, 169, 59, .18), transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(47, 158, 92, .25), transparent 50%),
+                linear-gradient(150deg, var(--ink) 0%, var(--forest-dark) 65%, var(--forest) 100%);
+            color: #fff;
+            position: relative;
+        }
+
+        .hero-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 56px;
+            align-items: center;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: .78rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--amber);
+            margin-bottom: 16px;
+        }
+
+        .eyebrow-on-light {
+            color: var(--forest);
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .accent {
+            color: var(--amber);
+        }
+
+        .hero-lead {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, .8);
+            max-width: 480px;
+            margin-bottom: 32px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .hero-visual {
+            padding: 22px;
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .badge {
+            background: rgba(242, 169, 59, .18);
+            color: var(--amber);
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+
+        .map-stats {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .75);
+        }
+
+        .map-stat-val {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .map-stat-sep {
+            opacity: .4;
+        }
+
+        .live-dot-wrap {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 1.6s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: .3;
+            }
+        }
+
+        .map-wrap {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #0c1722;
+        }
+
+        .route-svg {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .map-overlay {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .map-legend {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .75);
+            background: rgba(0, 0, 0, .35);
+            padding: 6px 10px;
+            border-radius: 50px;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 2px;
+        }
+
+        .legend-green {
+            background: #1e7a46;
+        }
+
+        .legend-blue {
+            background: #3b82f6;
+            margin-left: 10px;
+        }
+
+        .visual-caption {
+            margin-top: 14px;
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .6);
+            text-align: center;
+        }
+
+        /* Section heading helpers */
+        .section-heading {
+            font-size: 2.1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .section-intro {
+            color: var(--muted);
+            max-width: 560px;
+            margin-bottom: 40px;
+            font-size: 1.02rem;
+        }
+
+        section.features,
+        section.how-it-works,
+        section.cities,
+        section.faq {
+            padding: 90px 0;
+        }
+
+        section.features .container,
+        section.how-it-works .container,
+        section.cities .container,
+        section.faq .container {
+            text-align: left;
+        }
+
+        .features {
+            background: var(--paper);
+        }
+
+        .features p.eyebrow,
+        .how-it-works p.eyebrow,
+        .cities p.eyebrow,
+        .faq p.eyebrow {
+            text-align: left;
+        }
+
+        /* Feature cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: #fff;
+            border: 1px solid #e7ece4;
+            border-radius: 22px;
+            padding: 36px 28px;
+            transition: .3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 1.5rem 3rem rgba(16, 27, 44, .1);
+        }
+
+        .feature-icon {
+            width: 46px;
+            height: 46px;
+            stroke: var(--forest);
+            stroke-width: 1.6;
+            fill: none;
+            margin-bottom: 18px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            font-size: .95rem;
+        }
+
+        /* Stats (added feature) */
+        .stats {
+            background: var(--ink);
+            color: #fff;
+            padding: 70px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            text-align: center;
+        }
+
+        .stat-item h2 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--amber);
+            margin-bottom: 6px;
+        }
+
+        .stat-item p {
+            color: rgba(255, 255, 255, .7);
+            font-weight: 500;
+        }
+
+        /* How it works */
+        .how-it-works {
+            background: #fff;
+        }
+
+        .step-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 16px;
+            padding: 28px;
+            background: var(--paper);
+            border-radius: 20px;
+        }
+
+        .step-index {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: var(--forest);
+            font-weight: 700;
+        }
+
+        .step-body h3 {
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+        }
+
+        .step-body p {
+            color: var(--muted);
+            font-size: .92rem;
+        }
+
+        /* Cities */
+        .cities {
+            background: var(--paper);
+        }
+
+        .city-track {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .city-stop {
+            position: relative;
+        }
+
+        .city-dot {
+            display: block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cbd5cf;
+            margin: 0 auto 14px;
+        }
+
+        .city-stop.is-live .city-dot {
+            background: var(--forest);
+            box-shadow: 0 0 0 6px rgba(30, 122, 70, .15);
+        }
+
+        .city-stop.is-next .city-dot {
+            background: var(--amber);
+        }
+
+        .city-card {
+            background: #fff;
+            border: 1px solid #e7ece4;
+            border-radius: 18px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .city-status {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: var(--forest);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .city-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+        }
+
+        .city-card p {
+            color: var(--muted);
+            font-size: .88rem;
+        }
+
+        .city-note {
+            text-align: center;
+            margin-top: 32px;
+            color: var(--muted);
+        }
+
+        .city-note a {
+            color: var(--forest);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* FAQ */
+        .faq {
+            background: #fff;
+        }
+
+        .faq-list {
+            max-width: 760px;
+        }
+
+        .faq-item {
+            border: 1px solid #e7ece4;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            background: var(--paper);
+        }
+
+        .faq-trigger {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 22px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--ink);
+            text-align: left;
+        }
+
+        .faq-icon {
+            width: 18px;
+            height: 18px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .faq-icon::before,
+        .faq-icon::after {
+            content: '';
+            position: absolute;
+            background: var(--forest);
+            border-radius: 2px;
+            transition: .25s;
+        }
+
+        .faq-icon::before {
+            width: 18px;
+            height: 2px;
+            top: 8px;
+            left: 0;
+        }
+
+        .faq-icon::after {
+            width: 2px;
+            height: 18px;
+            top: 0;
+            left: 8px;
+        }
+
+        .faq-trigger[aria-expanded="true"] .faq-icon::after {
+            transform: scaleY(0);
+        }
+
+        .faq-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease;
+        }
+
+        .faq-panel-inner {
+            padding: 0 22px 20px;
+            color: var(--muted);
+            font-size: .94rem;
+        }
+
+        /* CTA band */
+        .cta-band {
+            padding: 80px 0;
+            background: var(--paper);
+        }
+
+        .cta-inner {
+            padding: 56px 40px;
+            text-align: center;
+        }
+
+        .cta-inner h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .cta-inner p {
+            color: rgba(255, 255, 255, .75);
+            margin-bottom: 26px;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--ink);
+            color: #fff;
+            padding: 64px 0 24px;
+        }
+
+        .footer-inner {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand p {
+            color: rgba(255, 255, 255, .6);
+            font-size: .92rem;
+        }
+
+        .footer-col h4 {
+            font-size: .92rem;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: var(--amber);
+            margin-bottom: 16px;
+        }
+
+        .footer-col a {
+            display: block;
+            color: rgba(255, 255, 255, .65);
+            text-decoration: none;
+            font-size: .92rem;
+            margin-bottom: 10px;
+        }
+
+        .footer-col a:hover {
+            color: #fff;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 10px;
+        }
+
+        .footer-social a {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 255, 255, .2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-social svg {
+            width: 16px;
+            height: 16px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 1.6;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, .1);
+            color: rgba(255, 255, 255, .5);
+            font-size: .85rem;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid,
+            .step-list,
+            .city-track {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-actions {
+                display: none;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .feature-grid,
+            .step-list,
+            .city-track {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -32,53 +914,44 @@
     <!-- NAVBAR -->
     <nav class="navbar" id="navbar">
         <div class="container nav-inner">
-
             <a class="logo" href="index.html" aria-label="Cit-E Cycling home">
-                <img src="./Resource/Logo.png" alt="Cit-E Cycling logo">
+                <span class="logo-mark">🚴</span>
                 <span class="logo-text">Cit-E Cycling</span>
             </a>
 
             <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu"
                 aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
 
             <div class="nav-actions">
                 <a href="admin_login.html" class="nav-admin">Admin login</a>
                 <a href="register_form.html" class="btn btn-primary btn-sm">Register interest</a>
             </div>
-
         </div>
     </nav>
 
     <main id="main">
-
         <!-- HERO -->
         <header class="hero" id="hero">
             <div class="container hero-inner">
-
                 <div class="hero-content">
                     <p class="eyebrow reveal" data-reveal>Coming soon to your city</p>
                     <h1 class="reveal" data-reveal data-reveal-delay="1">Ride the city, <span
                             class="accent">differently</span>.</h1>
-
                     <p class="hero-lead reveal" data-reveal data-reveal-delay="2">
                         Discover curated city routes, join community rides, and track every eco-mile
                         you ride — all from one portal.
                     </p>
-
                     <div class="hero-actions reveal" data-reveal data-reveal-delay="3">
                         <a href="register_form.html" class="btn btn-primary">
-                            Register Your Interest
-                            <span aria-hidden="true">&rarr;</span>
+                            Register Your Interest <span aria-hidden="true">&rarr;</span>
                         </a>
                         <a href="#how" class="btn btn-ghost">See how it works</a>
                     </div>
                 </div>
 
-                <div class="hero-visual glass glass-dark reveal" data-reveal data-reveal-delay="1" data-glow>
+                <div class="hero-visual glass glass-dark reveal" data-reveal data-reveal-delay="1">
                     <div class="map-header">
                         <span class="badge">Pre&#8209;launch</span>
                         <div class="map-stats">
@@ -129,7 +1002,6 @@
 
                             <rect width="640" height="360" fill="url(#cityGrid)" />
 
-                            <!-- Building footprints -->
                             <g clip-path="url(#mapClip)" opacity="0.15">
                                 <rect x="60" y="40" width="55" height="35" rx="3" fill="#eef1ea" />
                                 <rect x="130" y="30" width="40" height="50" rx="3" fill="#eef1ea" />
@@ -160,7 +1032,6 @@
                                 <rect x="510" y="285" width="65" height="55" rx="3" fill="#eef1ea" />
                             </g>
 
-                            <!-- Road grid -->
                             <g stroke="rgba(238,241,234,0.08)" stroke-width="6" fill="none" stroke-linecap="round">
                                 <line x1="0" y1="90" x2="640" y2="90" />
                                 <line x1="0" y1="185" x2="640" y2="185" />
@@ -170,7 +1041,6 @@
                                 <line x1="480" y1="0" x2="480" y2="360" />
                             </g>
 
-                            <!-- Primary route path (used for animateMotion) -->
                             <path id="primaryPath"
                                 d="M30,320 C80,295 100,240 175,210 C250,180 260,145 335,125 C400,108 445,130 510,95 C555,72 590,55 622,42"
                                 fill="none" stroke="url(#routeGrad)" stroke-width="3.5" stroke-linecap="round" />
@@ -179,7 +1049,6 @@
                                 fill="none" stroke="rgba(30,122,70,0.5)" stroke-width="1.5" stroke-dasharray="6 10"
                                 stroke-linecap="round" />
 
-                            <!-- Alt route -->
                             <path id="altPath"
                                 d="M30,320 C70,270 130,285 200,255 C280,220 330,265 410,225 C465,198 495,160 545,120 C575,98 605,80 625,65"
                                 fill="none" stroke="url(#routeGradBlue)" stroke-width="2.5" stroke-linecap="round" />
@@ -188,12 +1057,10 @@
                                 fill="none" stroke="rgba(59,130,246,0.4)" stroke-width="1" stroke-dasharray="4 12"
                                 stroke-linecap="round" />
 
-                            <!-- Hub: start -->
                             <circle cx="30" cy="320" r="10" fill="rgba(30,122,70,0.2)" filter="url(#hubGlow)" />
                             <circle cx="30" cy="320" r="6" fill="#101b2c" stroke="#1e7a46" stroke-width="2.5" />
                             <circle cx="30" cy="320" r="2.5" fill="#1e7a46" />
 
-                            <!-- Hub: central pulse -->
                             <circle cx="335" cy="125" r="20" fill="none" stroke="#1e7a46" stroke-width="1.2"
                                 opacity="0.5">
                                 <animate attributeName="r" values="12;26;12" dur="2.6s" repeatCount="indefinite" />
@@ -204,12 +1071,10 @@
                             <circle cx="335" cy="125" r="6" fill="#101b2c" stroke="#1e7a46" stroke-width="2.5" />
                             <circle cx="335" cy="125" r="2.5" fill="#1e7a46" />
 
-                            <!-- Hub: end -->
                             <circle cx="622" cy="42" r="8" fill="rgba(30,122,70,0.2)" filter="url(#hubGlow)" />
                             <circle cx="622" cy="42" r="5" fill="#101b2c" stroke="#1e7a46" stroke-width="2" />
                             <circle cx="622" cy="42" r="2" fill="#1e7a46" />
 
-                            <!-- Blue hubs -->
                             <circle cx="200" cy="255" r="7" fill="rgba(59,130,246,0.2)" filter="url(#hubGlow)" />
                             <circle cx="200" cy="255" r="5" fill="#101b2c" stroke="#3b82f6" stroke-width="2" />
                             <circle cx="200" cy="255" r="2" fill="#3b82f6" />
@@ -218,7 +1083,6 @@
                             <circle cx="545" cy="120" r="5" fill="#101b2c" stroke="#3b82f6" stroke-width="2" />
                             <circle cx="545" cy="120" r="2" fill="#3b82f6" />
 
-                            <!-- Labels -->
                             <text x="30" y="342" text-anchor="middle" font-family="JetBrains Mono, monospace"
                                 font-size="9" fill="rgba(238,241,234,0.55)" letter-spacing="0.05em">START</text>
                             <text x="335" y="150" text-anchor="middle" font-family="JetBrains Mono, monospace"
@@ -226,7 +1090,6 @@
                             <text x="622" y="32" text-anchor="middle" font-family="JetBrains Mono, monospace"
                                 font-size="9" fill="rgba(238,241,234,0.55)" letter-spacing="0.05em">END</text>
 
-                            <!-- Blue rider -->
                             <circle id="riderBlue" r="6" fill="#3b82f6" stroke="#101b2c" stroke-width="2"
                                 filter="url(#markerGlow)">
                                 <animateMotion dur="14s" repeatCount="indefinite" begin="3s">
@@ -234,7 +1097,6 @@
                                 </animateMotion>
                             </circle>
 
-                            <!-- Main amber rider -->
                             <circle id="riderMain" r="9" fill="#f2a93b" stroke="#101b2c" stroke-width="2.5"
                                 filter="url(#markerGlow)">
                                 <animateMotion dur="10s" repeatCount="indefinite">
@@ -253,7 +1115,6 @@
 
                     <p class="visual-caption">Live city routes &middot; Bristol pilot</p>
                 </div>
-
             </div>
         </header>
 
@@ -261,13 +1122,13 @@
         <section class="features" id="features" aria-labelledby="features-heading">
             <div class="container">
                 <p class="eyebrow eyebrow-on-light reveal" data-reveal>What's waiting for you</p>
-                <h2 id="features-heading" class="section-heading reveal" data-reveal>Everything for the everyday
-                    rider</h2>
-                <p class="section-intro reveal" data-reveal>Once Cit-E opens in your city, here's what's waiting
-                    for you.</p>
+                <h2 id="features-heading" class="section-heading reveal" data-reveal>Everything for the everyday rider
+                </h2>
+                <p class="section-intro reveal" data-reveal>Once Cit-E opens in your city, here's what's waiting for
+                    you.</p>
 
                 <div class="feature-grid">
-                    <article class="feature-card glass reveal" data-reveal data-glow>
+                    <article class="feature-card reveal" data-reveal>
                         <svg class="feature-icon" viewBox="0 0 24 24" fill="none">
                             <path d="M12 21s-7-5.3-7-11a7 7 0 0 1 14 0c0 5.7-7 11-7 11Z" />
                             <circle cx="12" cy="10" r="2.5" />
@@ -276,7 +1137,7 @@
                         <p>Browse curated paths and greenways across the city.</p>
                     </article>
 
-                    <article class="feature-card glass reveal" data-reveal data-reveal-delay="1" data-glow>
+                    <article class="feature-card reveal" data-reveal data-reveal-delay="1">
                         <svg class="feature-icon" viewBox="0 0 24 24" fill="none">
                             <circle cx="8" cy="8" r="3" />
                             <circle cx="17" cy="9" r="2.5" />
@@ -287,7 +1148,7 @@
                         <p>Meet riders heading the same way as you.</p>
                     </article>
 
-                    <article class="feature-card glass reveal" data-reveal data-reveal-delay="2" data-glow>
+                    <article class="feature-card reveal" data-reveal data-reveal-delay="2">
                         <svg class="feature-icon" viewBox="0 0 24 24" fill="none">
                             <path d="M4 19V10M11 19V5M18 19v-6" />
                             <path d="M2.5 19h19" />
@@ -299,31 +1160,48 @@
             </div>
         </section>
 
+        <!-- STATS (added feature) -->
+        <section class="stats" id="stats" aria-labelledby="stats-heading">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item reveal" data-reveal>
+                        <h2>500+</h2>
+                        <p>Participants</p>
+                    </div>
+                    <div class="stat-item reveal" data-reveal data-reveal-delay="1">
+                        <h2>50+</h2>
+                        <p>Events Organised</p>
+                    </div>
+                    <div class="stat-item reveal" data-reveal data-reveal-delay="2">
+                        <h2>100%</h2>
+                        <p>Secure Management</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- HOW IT WORKS -->
         <section class="how-it-works" id="how" aria-labelledby="how-heading">
             <div class="container">
                 <p class="eyebrow eyebrow-on-light reveal" data-reveal>Getting started</p>
-                <h2 id="how-heading" class="section-heading reveal" data-reveal>Three stops to your first ride
-                </h2>
+                <h2 id="how-heading" class="section-heading reveal" data-reveal>Three stops to your first ride</h2>
 
                 <ol class="step-list">
-                    <li class="step-item glass reveal" data-reveal>
+                    <li class="step-item reveal" data-reveal>
                         <span class="step-index">01</span>
                         <div class="step-body">
                             <h3>Register your interest</h3>
                             <p>Tell us about your riding habits.</p>
                         </div>
                     </li>
-
-                    <li class="step-item glass reveal" data-reveal data-reveal-delay="1">
+                    <li class="step-item reveal" data-reveal data-reveal-delay="1">
                         <span class="step-index">02</span>
                         <div class="step-body">
                             <h3>Get notified</h3>
                             <p>We email you at launch.</p>
                         </div>
                     </li>
-
-                    <li class="step-item glass reveal" data-reveal data-reveal-delay="2">
+                    <li class="step-item reveal" data-reveal data-reveal-delay="2">
                         <span class="step-index">03</span>
                         <div class="step-body">
                             <h3>Start riding</h3>
@@ -339,40 +1217,37 @@
             <div class="container">
                 <p class="eyebrow eyebrow-on-light reveal" data-reveal>The rollout</p>
                 <h2 id="cities-heading" class="section-heading reveal" data-reveal>Where we're riding next</h2>
-                <p class="section-intro reveal" data-reveal>Cit-E opens one city at a time, so every launch gets
-                    the route map right.</p>
+                <p class="section-intro reveal" data-reveal>Cit-E opens one city at a time, so every launch gets the
+                    route map right.</p>
 
                 <ul class="city-track">
                     <li class="city-stop is-live reveal" data-reveal>
                         <span class="city-dot" aria-hidden="true"></span>
-                        <div class="city-card glass" data-glow>
+                        <div class="city-card">
                             <span class="city-status">Live now</span>
                             <h3>Bristol</h3>
                             <p>Routes, rides and tracking are open today.</p>
                         </div>
                     </li>
-
                     <li class="city-stop is-next reveal" data-reveal data-reveal-delay="1">
                         <span class="city-dot" aria-hidden="true"></span>
-                        <div class="city-card glass" data-glow>
+                        <div class="city-card">
                             <span class="city-status">Launching Spring 2027</span>
                             <h3>Manchester</h3>
                             <p>Registration is open — get notified first.</p>
                         </div>
                     </li>
-
                     <li class="city-stop reveal" data-reveal data-reveal-delay="2">
                         <span class="city-dot" aria-hidden="true"></span>
-                        <div class="city-card glass" data-glow>
+                        <div class="city-card">
                             <span class="city-status">Launching Summer 2027</span>
                             <h3>Leeds</h3>
                             <p>Route mapping is underway.</p>
                         </div>
                     </li>
-
                     <li class="city-stop reveal" data-reveal data-reveal-delay="3">
                         <span class="city-dot" aria-hidden="true"></span>
-                        <div class="city-card glass" data-glow>
+                        <div class="city-card">
                             <span class="city-status">Coming soon</span>
                             <h3>Glasgow</h3>
                             <p>Register your interest and we'll prioritise it.</p>
@@ -392,7 +1267,7 @@
                 <h2 id="faq-heading" class="section-heading reveal" data-reveal>Questions, answered</h2>
 
                 <div class="faq-list reveal" data-reveal>
-                    <div class="faq-item glass">
+                    <div class="faq-item">
                         <button class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-1"
                             id="faq-control-1">
                             How much will Cit-E cost?
@@ -406,7 +1281,7 @@
                         </div>
                     </div>
 
-                    <div class="faq-item glass">
+                    <div class="faq-item">
                         <button class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-2"
                             id="faq-control-2">
                             Do I need my own bike?
@@ -414,13 +1289,13 @@
                         </button>
                         <div class="faq-panel" id="faq-panel-2" role="region" aria-labelledby="faq-control-2">
                             <div class="faq-panel-inner">
-                                <p>No — Cit-E works with your own bike or a city bike-share partner, depending on
-                                    what's available where you live.</p>
+                                <p>No — Cit-E works with your own bike or a city bike-share partner, depending on what's
+                                    available where you live.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="faq-item glass">
+                    <div class="faq-item">
                         <button class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-3"
                             id="faq-control-3">
                             When does Cit-E launch in my city?
@@ -434,7 +1309,7 @@
                         </div>
                     </div>
 
-                    <div class="faq-item glass">
+                    <div class="faq-item">
                         <button class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-4"
                             id="faq-control-4">
                             How do eco-miles work?
@@ -442,13 +1317,13 @@
                         </button>
                         <div class="faq-panel" id="faq-panel-4" role="region" aria-labelledby="faq-control-4">
                             <div class="faq-panel-inner">
-                                <p>Every tracked ride logs the distance and estimated emissions saved versus
-                                    driving, building into a running total on your profile.</p>
+                                <p>Every tracked ride logs the distance and estimated emissions saved versus driving,
+                                    building into a running total on your profile.</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="faq-item glass">
+                    <div class="faq-item">
                         <button class="faq-trigger" aria-expanded="false" aria-controls="faq-panel-5"
                             id="faq-control-5">
                             Can I host a community ride?
@@ -456,8 +1331,8 @@
                         </button>
                         <div class="faq-panel" id="faq-panel-5" role="region" aria-labelledby="faq-control-5">
                             <div class="faq-panel-inner">
-                                <p>Yes. Once your city is live, any rider can propose a route and open it up for
-                                    others to join.</p>
+                                <p>Yes. Once your city is live, any rider can propose a route and open it up for others
+                                    to join.</p>
                             </div>
                         </div>
                     </div>
@@ -468,7 +1343,7 @@
         <!-- CTA -->
         <section class="cta-band">
             <div class="container">
-                <div class="cta-inner glass glass-dark reveal" data-reveal data-glow>
+                <div class="cta-inner glass-dark reveal" data-reveal>
                     <h2>Be one of the first riders.</h2>
                     <p>We're rolling out city by city — register now.</p>
                     <a href="register_form.html" class="btn btn-primary">
@@ -477,16 +1352,14 @@
                 </div>
             </div>
         </section>
-
     </main>
 
     <!-- FOOTER -->
     <footer class="footer">
         <div class="container footer-inner">
-
             <div class="footer-brand">
                 <a class="footer-logo" href="index.html" aria-label="Cit-E Cycling home">
-                    <img src="./Resource/Logo.png" alt="Cit-E Cycling logo">
+                    <span class="logo-mark">🚴</span>
                     <span>Cit-E Cycling</span>
                 </a>
                 <p>Ride the city, differently.</p>
@@ -523,7 +1396,6 @@
                     </a>
                 </div>
             </div>
-
         </div>
 
         <div class="container footer-bottom">
@@ -532,7 +1404,62 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        // Navbar scroll state
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // Mobile nav toggle
+        const navToggle = document.getElementById('navToggle');
+        const navActions = document.querySelector('.nav-actions');
+        navToggle.addEventListener('click', () => {
+            const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+            navToggle.setAttribute('aria-expanded', String(!expanded));
+            navActions.style.display = expanded ? 'none' : 'flex';
+            navActions.style.flexDirection = 'column';
+            navActions.style.position = 'absolute';
+            navActions.style.top = '76px';
+            navActions.style.right = '24px';
+            navActions.style.background = 'var(--ink)';
+            navActions.style.padding = '16px';
+            navActions.style.borderRadius = '12px';
+        });
+
+        // Reveal-on-scroll
+        const revealEls = document.querySelectorAll('[data-reveal]');
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.15 });
+        revealEls.forEach(el => io.observe(el));
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-trigger').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const panel = document.getElementById(btn.getAttribute('aria-controls'));
+                const expanded = btn.getAttribute('aria-expanded') === 'true';
+                btn.setAttribute('aria-expanded', String(!expanded));
+                panel.style.maxHeight = expanded ? '0px' : panel.scrollHeight + 'px';
+            });
+        });
+
+        // Live hero stat ticking (cosmetic)
+        const statRiders = document.getElementById('statRiders');
+        const statKm = document.getElementById('statKm');
+        setInterval(() => {
+            if (!statRiders || !statKm) return;
+            let riders = parseInt(statRiders.textContent.replace(/,/g, ''), 10);
+            riders += Math.floor(Math.random() * 3);
+            statRiders.textContent = riders.toLocaleString();
+            statKm.textContent = (8 + Math.random() * 0.6).toFixed(1);
+        }, 4000);
+    </script>
 </body>
 
 </html>
