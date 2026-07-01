@@ -1,7 +1,4 @@
 <?php
-/* ============================================
-   register.php — Handles interest form POST
-   ============================================ */
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: register_form.html");
@@ -29,20 +26,38 @@ if (empty($firstname) || empty($surname) || empty($email)) {
             'root', '',
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
         );
-        $stmt = $pdo->prepare(
-            "INSERT INTO interest (firstname, surname, email, terms)
-             VALUES (:firstname, :surname, :email, :terms)"
-        );
-        $stmt->execute([
-            ':firstname' => $firstname,
-            ':surname'   => $surname,
-            ':email'     => $email,
-            ':terms'     => $terms,
-        ]);
-        $success = true;
+
+        // Check for an existing registration with the same email first.
+        $check = $pdo->prepare("SELECT id FROM interest WHERE email = :email LIMIT 1");
+        $check->execute([':email' => $email]);
+
+        if ($check->fetch()) {
+            $error = 'That email address has already been registered. Please use a different email or contact us if this is a mistake.';
+        } else {
+            $stmt = $pdo->prepare(
+                "INSERT INTO interest (firstname, surname, email, terms)
+                 VALUES (:firstname, :surname, :email, :terms)"
+            );
+            $stmt->execute([
+                ':firstname' => $firstname,
+                ':surname'   => $surname,
+                ':email'     => $email,
+                ':terms'     => $terms,
+            ]);
+            $success = true;
+        }
     } catch (PDOException $e) {
-        $success = true;
-        // $error = 'Database error: ' . $e->getMessage();
+        // 1062 = MySQL duplicate-entry error (in case you add a UNIQUE
+        // constraint on email at the DB level too, which is recommended
+        // as a second line of defence against race conditions).
+        if ($e->getCode() == 23000 || strpos($e->getMessage(), '1062') !== false) {
+            $error = 'That email address has already been registered.';
+        } else {
+            $error = 'Something went wrong while saving your registration. Please try again.';
+            // For local debugging only — remove/comment out in production:
+            // $error .= ' (' . $e->getMessage() . ')';
+        }
+        $success = false;
     }
 }
 ?>
@@ -99,7 +114,7 @@ a:hover{color:var(--gd);}
   display:flex;align-items:center;gap:9px;
   text-decoration:none;color:var(--ink);
 }
-.nav-logo img{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--g);object-fit:cover;}
+.nav-logo img{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--g);object-fit:cover;}
 .nav-logo span{font-weight:800;font-size:.94rem;letter-spacing:-.01em;}
 .nav-links{display:flex;gap:20px;font-size:.84rem;font-weight:600;}
 .nav-links a{color:var(--muted);transition:color .15s;}
@@ -108,13 +123,28 @@ a:hover{color:var(--gd);}
 /* ─── main body ─── */
 .body{
   flex:1;display:flex;align-items:center;justify-content:center;
-  padding:60px 20px;
+  padding:60px 20px;position:relative;overflow:hidden;
 }
+
+/* Floating orbs (error state only via body class) */
+.body::before,.body::after{
+  content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(70px);
+}
+body.is-error .body::before{
+  width:380px;height:380px;background:rgba(239,68,68,.07);top:-100px;left:-100px;
+  animation:orbA 12s ease-in-out infinite;
+}
+body.is-error .body::after{
+  width:300px;height:300px;background:rgba(239,68,68,.05);bottom:-80px;right:-60px;
+  animation:orbB 15s ease-in-out infinite;
+}
+@keyframes orbA{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,30px) scale(1.1);}}
+@keyframes orbB{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-30px,-25px) scale(1.08);}}
 
 /* ─── loading state ─── */
 #loader{
   display:flex;flex-direction:column;align-items:center;
-  gap:18px;text-align:center;
+  gap:18px;text-align:center;position:relative;z-index:1;
 }
 
 .spin-ring{
@@ -177,14 +207,14 @@ a:hover{color:var(--gd);}
 }
 
 /* ─── result card ─── */
-#result{display:none;width:100%;max-width:520px;}
+#result{display:none;width:100%;max-width:520px;position:relative;z-index:1;}
 
 .rcard{
   background:var(--card);
   border:1px solid var(--hairline);
-  border-radius:24px;
+  border-radius:28px;
   overflow:hidden;
-  box-shadow:0 8px 40px rgba(15,23,42,.08);
+  box-shadow:0 0 0 1px rgba(0,0,0,.04), 0 16px 56px rgba(15,23,42,.12), 0 6px 18px rgba(15,23,42,.06);
   animation:cardIn .55s cubic-bezier(.22,1,.36,1);
 }
 @keyframes cardIn{
@@ -192,60 +222,67 @@ a:hover{color:var(--gd);}
   to{opacity:1;transform:translateY(0) scale(1);}
 }
 
-/* top accent bar */
-.rcard-bar{height:4px;}
-.rcard-bar.success{background:linear-gradient(90deg,var(--g),var(--gl),var(--am));}
-.rcard-bar.error  {background:linear-gradient(90deg,var(--red),#f97316);}
-
-.rcard-body{padding:40px 38px 36px;text-align:center;}
-
-/* icon */
-.rc-icon{
-  width:76px;height:76px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 22px;
-  animation:iconBounce .55s .15s cubic-bezier(.34,1.56,.64,1) both;
+/* ── SUCCESS header ── */
+.rcard-hdr.success{
+  background:linear-gradient(135deg, var(--g) 0%, var(--gl) 60%, var(--am) 130%);
+  padding:38px 38px 32px;text-align:center;position:relative;overflow:hidden;
 }
-@keyframes iconBounce{
-  from{transform:scale(0);opacity:0;}
-  to{transform:scale(1);opacity:1;}
+.rcard-hdr.success::before{
+  content:'';position:absolute;inset:0;
+  background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.05) 0 2px, transparent 2px 20px);
+  pointer-events:none;
 }
-.rc-icon.success{
-  background:linear-gradient(135deg,rgba(22,163,74,.12),rgba(22,163,74,.06));
-  border:1.5px solid rgba(22,163,74,.22);
-}
-.rc-icon.error{
-  background:var(--redfaint);
-  border:1.5px solid rgba(239,68,68,.22);
-}
-.rc-icon svg{width:36px;height:36px;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round;}
-.rc-icon.success svg{stroke:var(--g);}
-.rc-icon.error   svg{stroke:var(--red);}
 
-/* tag */
-.rc-tag{
-  display:inline-flex;align-items:center;gap:5px;
-  font-family:var(--mono);font-size:.6rem;font-weight:600;
-  text-transform:uppercase;letter-spacing:.1em;
-  padding:3px 10px;border-radius:999px;
-  margin-bottom:12px;
+/* ── ERROR header — matches admin delete popup language ── */
+.rcard-hdr.error{
+  position:relative;padding:42px 36px 34px;text-align:center;overflow:hidden;
+  background:linear-gradient(150deg,#07090f 0%,#1c0404 45%,#6b0e0e 100%);
 }
-.rc-tag.success{background:rgba(22,163,74,.09);color:var(--gd);border:1px solid rgba(22,163,74,.18);}
-.rc-tag.error  {background:var(--redfaint);color:var(--red);border:1px solid rgba(239,68,68,.18);}
+.rcard-hdr.error::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(239,68,68,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,.06) 1px,transparent 1px);
+  background-size:26px 26px;pointer-events:none;
+}
+.rcard-hdr.error::after{
+  content:'';position:absolute;bottom:-70px;left:50%;transform:translateX(-50%);
+  width:280px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(239,68,68,.28) 0%,transparent 65%);
+  pointer-events:none;
+}
 
-.rc-title{font-size:1.6rem;font-weight:800;letter-spacing:-.025em;margin-bottom:10px;}
-.rc-title.success{color:var(--ink);}
-.rc-title.error  {color:var(--red);}
+/* icon rings (error) */
+.err-rings{position:relative;width:86px;height:86px;margin:0 auto 20px;}
+.err-ring{position:absolute;border-radius:50%;border:1px solid rgba(239,68,68,.22);inset:0;animation:errRingPulse 2.8s ease-in-out infinite;}
+.err-ring:nth-child(2){inset:-11px;border-color:rgba(239,68,68,.13);animation-delay:.55s;}
+.err-ring:nth-child(3){inset:-22px;border-color:rgba(239,68,68,.07);animation-delay:1.1s;}
+@keyframes errRingPulse{0%,100%{transform:scale(.94);opacity:.9;}50%{transform:scale(1.06);opacity:.35;}}
+.err-core{position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,rgba(239,68,68,.22),rgba(185,28,28,.28));border:1.5px solid rgba(239,68,68,.42);display:flex;align-items:center;justify-content:center;box-shadow:0 0 28px rgba(239,68,68,.22);}
+.err-core svg{width:34px;height:34px;stroke:#fca5a5;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 10px rgba(239,68,68,.6));}
 
-.rc-desc{font-size:.88rem;color:var(--muted);line-height:1.68;margin-bottom:26px;max-width:400px;margin-left:auto;margin-right:auto;}
+/* icon (success — simple circle bounce) */
+.suc-icon-wrap{width:78px;height:78px;border-radius:50%;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;backdrop-filter:blur(6px);animation:iconBounce .55s .15s cubic-bezier(.34,1.56,.64,1) both;box-shadow:0 0 30px rgba(255,255,255,.25);}
+@keyframes iconBounce{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.suc-icon-wrap svg{width:36px;height:36px;stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+
+.hdr-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px;position:relative;z-index:1;}
+.hdr-label.on-dark{color:rgba(255,255,255,.85);}
+.hdr-label.on-green{color:rgba(255,255,255,.85);}
+
+.hdr-title{font-size:1.5rem;font-weight:800;letter-spacing:-.025em;position:relative;z-index:1;}
+.hdr-title.on-white{color:#fff;}
+
+/* ─── body ─── */
+.rcard-body{padding:32px 36px 34px;text-align:center;}
+
+.rc-desc{font-size:.88rem;color:var(--muted);line-height:1.68;margin-bottom:24px;max-width:400px;margin-left:auto;margin-right:auto;}
 .rc-desc strong{color:var(--ink);font-weight:700;}
 
-/* info box */
+/* info box (success) */
 .rc-info{
   background:var(--gfaint);
   border:1px solid rgba(22,163,74,.14);
   border-radius:14px;padding:16px 18px;
-  margin-bottom:26px;text-align:left;
+  margin-bottom:24px;text-align:left;
   display:flex;flex-direction:column;gap:10px;
 }
 .rc-info-row{
@@ -260,38 +297,28 @@ a:hover{color:var(--gd);}
 .rc-info-row .lbl{color:var(--muted);min-width:52px;}
 .rc-info-row .val{font-weight:700;color:var(--ink);word-break:break-all;}
 
-/* divider */
-.rc-div{height:1px;background:var(--hairline);margin:0 0 24px;}
+/* error detail box */
+.err-detail{
+  display:flex;align-items:flex-start;gap:11px;
+  background:#fef2f2;border:1px solid #fecaca;
+  border-radius:14px;padding:14px 16px;margin-bottom:18px;
+  text-align:left;
+}
+.err-detail svg{width:18px;height:18px;stroke:#dc2626;stroke-width:2;fill:none;flex-shrink:0;margin-top:1px;}
+.err-detail-text{font-size:.84rem;color:#991b1b;line-height:1.55;}
+.err-detail-text b{display:block;font-weight:800;margin-bottom:2px;}
 
-/* what's next */
-.rc-next{
-  display:flex;flex-direction:column;gap:8px;
-  margin-bottom:26px;text-align:left;
+/* error code ref */
+.err-code{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:#f8f9fa;border:1px solid #e9ecef;border-radius:10px;
+  padding:8px 14px;font-family:var(--mono);font-size:.7rem;color:#64748b;
+  margin-bottom:22px;letter-spacing:.04em;
 }
-.rc-next-title{
-  font-size:.72rem;font-weight:700;font-family:var(--mono);
-  text-transform:uppercase;letter-spacing:.08em;
-  color:var(--muted);margin-bottom:4px;
-}
-.rc-next-item{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:10px 12px;
-  background:#f8faf7;border:1px solid var(--hairline);
-  border-radius:10px;font-size:.82rem;line-height:1.5;
-}
-.rc-next-num{
-  width:20px;height:20px;border-radius:50%;
-  background:var(--g);color:#fff;
-  font-size:.66rem;font-weight:800;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;margin-top:1px;
-}
-.rc-next-item span{color:var(--muted);}
-.rc-next-item strong{color:var(--ink);font-weight:700;}
+.err-code span{color:#dc2626;font-weight:700;}
 
 /* buttons */
 .rc-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-
 .btn{
   display:inline-flex;align-items:center;gap:7px;
   padding:11px 22px;border-radius:999px;
@@ -310,13 +337,19 @@ a:hover{color:var(--gd);}
   border:1.5px solid var(--hairline);
 }
 .btn-outline:hover{border-color:var(--g);color:var(--g);}
-.btn-red{background:var(--red);color:#fff;box-shadow:0 4px 14px rgba(239,68,68,.24);}
-.btn-red:hover{background:#dc2626;color:#fff;}
+.btn-red{
+  background:linear-gradient(135deg,#b91c1c 0%,#ef4444 100%);
+  color:#fff;
+  box-shadow:0 4px 18px rgba(220,38,38,.36);
+  animation:btnGlow 2.6s ease-in-out infinite;
+}
+@keyframes btnGlow{0%,100%{box-shadow:0 4px 18px rgba(220,38,38,.36),0 0 0 0 rgba(220,38,38,.2);}50%{box-shadow:0 4px 18px rgba(220,38,38,.36),0 0 0 7px rgba(220,38,38,0);}}
+.btn-red:hover{background:linear-gradient(135deg,#991b1b 0%,#dc2626 100%);color:#fff;box-shadow:0 6px 26px rgba(220,38,38,.5);transform:translateY(-1px);animation:none;}
 
 /* ─── footer ─── */
 .footer{
   background:var(--ink2);color:rgba(238,242,234,.5);
-  padding:44px 28px 24px;
+  padding:44px 28px 24px;position:relative;z-index:1;
 }
 .footer-in{
   max-width:1100px;margin:0 auto;
@@ -341,14 +374,15 @@ a:hover{color:var(--gd);}
 
 /* ─── responsive ─── */
 @media(max-width:600px){
-  .rcard-body{padding:28px 20px 24px;}
+  .rcard-body{padding:26px 22px 26px;}
+  .rcard-hdr.success,.rcard-hdr.error{padding:32px 24px 26px;}
   .rc-btns{flex-direction:column;align-items:stretch;}
   .footer-in{grid-template-columns:1fr;}
   .nav-links{display:none;}
 }
 </style>
 </head>
-<body>
+<body<?= $success ? '' : ' class="is-error"' ?>>
 
 <!-- ══ NAV ══ -->
 <nav class="nav">
@@ -392,22 +426,18 @@ a:hover{color:var(--gd);}
   <div id="result">
     <div class="rcard">
 
-      <div class="rcard-bar <?= $success ? 'success' : 'error' ?>"></div>
+      <?php if ($success): ?>
+
+      <!-- ════════ SUCCESS HEADER ════════ -->
+      <div class="rcard-hdr success">
+        <div class="suc-icon-wrap">
+          <svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <div class="hdr-label on-green">Registration Complete</div>
+        <h1 class="hdr-title on-white">You're on the list! 🎉</h1>
+      </div>
 
       <div class="rcard-body">
-
-        <?php if ($success): ?>
-
-        <div class="rc-icon success">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12.5l3 3 5-5.5"/></svg>
-        </div>
-
-        <span class="rc-tag success">
-          <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><circle cx="4" cy="4" r="4"/></svg>
-          Registration Complete
-        </span>
-
-        <h1 class="rc-title success">You're on the list! 🎉</h1>
 
         <p class="rc-desc">
           Welcome aboard, <strong><?= $firstname ?></strong>. Your interest has been recorded —
@@ -432,24 +462,6 @@ a:hover{color:var(--gd);}
           </div>
         </div>
 
-        <div class="rc-div"></div>
-
-        <div class="rc-next">
-          <p class="rc-next-title">What happens next</p>
-          <div class="rc-next-item">
-            <span class="rc-next-num">1</span>
-            <div><strong>Confirmation email</strong><br><span>Check your inbox — a confirmation will arrive shortly.</span></div>
-          </div>
-          <div class="rc-next-item">
-            <span class="rc-next-num">2</span>
-            <div><strong>Launch notification</strong><br><span>You'll be first to know when we go live in your city.</span></div>
-          </div>
-          <div class="rc-next-item">
-            <span class="rc-next-num">3</span>
-            <div><strong>Start riding</strong><br><span>Join the community and take part in your first event.</span></div>
-          </div>
-        </div>
-
         <div class="rc-btns">
           <a href="index.html" class="btn btn-primary">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -461,17 +473,37 @@ a:hover{color:var(--gd);}
           </a>
         </div>
 
-        <?php else: ?>
+      </div>
 
-        <div class="rc-icon error">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+      <?php else: ?>
+
+      <!-- ════════ ERROR HEADER (stunning — matches admin delete popup) ════════ -->
+      <div class="rcard-hdr error">
+        <div class="err-rings">
+          <div class="err-ring"></div>
+          <div class="err-ring"></div>
+          <div class="err-ring"></div>
+          <div class="err-core">
+            <svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+          </div>
+        </div>
+        <div class="hdr-label on-dark">Something went wrong</div>
+        <h1 class="hdr-title on-white">Registration Failed</h1>
+      </div>
+
+      <div class="rcard-body">
+
+        <div class="err-detail">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          <div class="err-detail-text">
+            <b>What happened?</b>
+            <?= htmlspecialchars($error) ?>
+          </div>
         </div>
 
-        <span class="rc-tag error">Registration Failed</span>
-
-        <h1 class="rc-title error">Something went wrong</h1>
-
-        <p class="rc-desc"><?= htmlspecialchars($error) ?> Please check your details and try again.</p>
+        <div class="err-code">
+          ERR · <span>REG_FAILED</span> · <?= date('H:i:s') ?>
+        </div>
 
         <div class="rc-btns">
           <a href="register_form.html" class="btn btn-red">
@@ -484,9 +516,10 @@ a:hover{color:var(--gd);}
           </a>
         </div>
 
-        <?php endif; ?>
-
       </div>
+
+      <?php endif; ?>
+
     </div>
   </div>
 

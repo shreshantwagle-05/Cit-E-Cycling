@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,254 +8,744 @@
     <link rel="icon" href="./Resource/Logo.png" type="image/png" sizes="32x32">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
-:root{--green:#1e7a46;--green-deep:#145c34;--green-light:#2f9e5c;--green-tint:rgba(30,122,70,.1);--amber:#f2a93b;--ink:#101b2c;--ash:#5b6b63;--paper:#f4f7f3;--surface:#fff;--hairline:#e1e8df;--font:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;--r:14px;--rl:22px}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--font);color:var(--ink);background:var(--paper);min-height:100vh;-webkit-font-smoothing:antialiased}
-a{color:var(--green);text-decoration:none}
-a:hover{color:var(--green-deep)}
-img,svg{display:block}
-
-/* Page split */
-.page{min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr}
-
-/* ── Left brand panel ── */
-.panel-brand{position:relative;background:radial-gradient(ellipse 60% 50% at 15% 20%,rgba(242,169,59,.2) 0%,transparent 55%),radial-gradient(ellipse 55% 55% at 85% 80%,rgba(47,158,92,.28) 0%,transparent 55%),linear-gradient(155deg,var(--ink) 0%,var(--green-deep) 60%,var(--green) 100%);color:#fff;padding:48px 52px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
-.panel-brand::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 64px),repeating-linear-gradient(90deg,rgba(255,255,255,.03) 0 1px,transparent 1px 64px);pointer-events:none}
-.brand-logo{display:flex;align-items:center;gap:11px;position:relative;z-index:1;color:#fff}
-.brand-logo-mark{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--green-light);overflow:hidden;flex-shrink:0}
-.brand-logo-mark img{width:100%;height:100%;object-fit:cover}
-.brand-logo span{font-weight:800;font-size:1rem;letter-spacing:-.01em}
-.brand-copy{position:relative;z-index:1;max-width:400px}
-.brand-eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);display:inline-block;margin-bottom:16px}
-.brand-copy h1{font-size:clamp(1.9rem,3vw,2.55rem);font-weight:800;line-height:1.12;margin-bottom:14px;letter-spacing:-.025em}
-.brand-copy h1 .accent{color:var(--amber)}
-.brand-copy p{color:rgba(255,255,255,.7);font-size:.95rem;line-height:1.6}
-.perk-list{list-style:none;margin-top:28px;display:flex;flex-direction:column;gap:13px;position:relative;z-index:1}
-.perk-list li{display:flex;align-items:flex-start;gap:11px;color:rgba(255,255,255,.82);font-size:.91rem;line-height:1.5}
-.perk-check{width:21px;height:21px;border-radius:50%;background:rgba(242,169,59,.15);border:1px solid rgba(242,169,59,.4);color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:800;flex-shrink:0;margin-top:1px}
-.brand-foot{position:relative;z-index:1;font-family:var(--mono);font-size:.72rem;color:rgba(255,255,255,.3);letter-spacing:.03em}
-
-/* ── Right form panel ── */
-.panel-form{background:var(--surface);display:flex;align-items:center;justify-content:center;padding:56px 52px}
-.form-wrap{width:100%;max-width:440px}
-.form-toprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px}
-.form-back{font-size:.86rem;font-weight:600;color:var(--ash);transition:color .18s}
-.form-back:hover{color:var(--ink)}
-.form-nav{display:flex;gap:18px;font-size:.86rem;font-weight:600}
-.form-nav a{color:var(--ash);transition:color .18s}
-.form-nav a:hover,.form-nav a.active{color:var(--green)}
-.form-heading{margin-bottom:26px}
-.form-heading h2{font-size:1.7rem;font-weight:800;letter-spacing:-.025em;margin-bottom:7px}
-.form-heading p{color:var(--ash);font-size:.92rem;line-height:1.55}
-
-/* Fields */
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.field{margin-bottom:17px;display:flex;flex-direction:column;gap:7px}
-.field label{font-size:.82rem;font-weight:700;color:var(--ink);letter-spacing:.01em}
-.field-req{color:var(--amber)}
-.input-shell{position:relative;background:#fbfcfa;border:1.5px solid var(--hairline);border-radius:var(--r);transition:border-color .2s,box-shadow .2s,background .2s}
-.input-shell:focus-within{border-color:var(--green);box-shadow:0 0 0 4px rgba(30,122,70,.1);background:var(--surface)}
-.input-shell input{width:100%;border:none;background:transparent;padding:13px 14px;font-family:var(--font);font-size:.93rem;color:var(--ink);border-radius:var(--r);outline:none;caret-color:var(--green)}
-.input-shell input::placeholder{color:#a8b4a8}
-.field-error{font-size:.76rem;color:#dc2626;font-family:var(--mono);display:none}
-.field.show-error .field-error{display:block}
-.field.show-error .input-shell{border-color:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.1)}
-
-/* Checkbox */
-.check-group{margin:4px 0 22px;display:flex;flex-direction:column;gap:6px}
-.check-label{display:flex;align-items:flex-start;gap:11px;cursor:pointer}
-.check-label input[type=checkbox]{position:absolute;opacity:0;width:0;height:0}
-.check-box{flex-shrink:0;width:20px;height:20px;background:#fbfcfa;border:1.5px solid var(--hairline);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:background .18s,border-color .18s,box-shadow .18s}
-.check-box svg{width:11px;height:11px;opacity:0;transform:scale(.5);transition:opacity .18s,transform .22s cubic-bezier(.34,1.56,.64,1)}
-.check-label input:checked~.check-box{background:var(--green);border-color:var(--green);box-shadow:0 0 0 3px rgba(30,122,70,.12)}
-.check-label input:checked~.check-box svg{opacity:1;transform:scale(1)}
-.check-group.show-error .check-box{border-color:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.1)}
-.check-text{font-size:.85rem;color:var(--ash);line-height:1.5}
-.check-text a{font-weight:700;color:var(--green)}
-.check-error{font-size:.76rem;color:#dc2626;font-family:var(--mono);display:none;padding-left:31px}
-.check-group.show-error .check-error{display:block}
-
-/* Error banner */
-.error-banner{display:none;align-items:center;gap:10px;padding:11px 14px;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.22);border-radius:10px;margin-bottom:18px;font-size:.85rem;font-weight:500;color:#b91c1c;animation:bannerIn .25s ease}
-.error-banner.visible{display:flex}
-@keyframes bannerIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.error-banner svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.8;fill:none;flex-shrink:0}
-
-/* Shake */
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-.shake{animation:shake .42s ease}
-
-/* Submit */
-.btn-submit{width:100%;padding:14px 20px;background:var(--green);border:none;border-radius:var(--r);font-family:var(--font);font-size:.95rem;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 16px rgba(30,122,70,.28);transition:background .18s,transform .18s,box-shadow .18s}
-.btn-submit:hover:not(:disabled){background:var(--green-deep);transform:translateY(-1px);box-shadow:0 6px 22px rgba(30,122,70,.36)}
-.btn-submit:disabled{opacity:.65;cursor:not-allowed}
-.btn-submit svg{width:17px;height:17px;stroke:currentColor;stroke-width:2.2;fill:none;transition:transform .18s}
-.btn-submit:hover svg{transform:translateX(3px)}
-.form-bottom{text-align:center;margin-top:18px;font-size:.85rem;color:var(--ash)}
-.form-bottom a{font-weight:700}
-
-/* Responsive */
-@media(max-width:960px){.page{grid-template-columns:1fr}.panel-brand{padding:40px 32px}.perk-list{display:none}.panel-form{padding:40px 28px}}
-@media(max-width:480px){.field-row{grid-template-columns:1fr}.form-toprow{flex-direction:column;align-items:flex-start;gap:12px}.panel-form{padding:32px 20px}}
-    </style>
-</head>
-<body>
-<div class="page">
-
-    <!-- Left brand panel -->
-    <div class="panel-brand">
-        <a class="brand-logo" href="index.html">
-            <div class="brand-logo-mark"><img src="./Resource/Logo.png" alt="Cit-E Cycling"></div>
-            <span>Cit-E Cycling</span>
-        </a>
-        <div class="brand-copy">
-            <span class="brand-eyebrow">Be first in line</span>
-            <h1>Ride the city,<br><span class="accent">differently</span>.</h1>
-            <p>Register your interest and we'll notify you the moment Cit-E opens routes, rides and memberships in your city.</p>
-            <ul class="perk-list">
-                <li><span class="perk-check">✓</span>Early access to curated city routes</li>
-                <li><span class="perk-check">✓</span>Priority invites to community rides</li>
-                <li><span class="perk-check">✓</span>Launch-day notification for your city</li>
-                <li><span class="perk-check">✓</span>No payment required to register</li>
-            </ul>
-        </div>
-        <p class="brand-foot">&copy; 2026 Cit-E Cycling — Built for riders, by riders.</p>
-    </div>
-
-    <!-- Right form panel -->
-    <div class="panel-form">
-        <div class="form-wrap">
-
-            <div class="form-toprow">
-                <a href="index.html" class="form-back">← Home</a>
-                <div class="form-nav">
-                    <a href="register_form.html" class="active">Register</a>
-                    <a href="admin_login.html">Admin login</a>
-                </div>
-            </div>
-
-            <div class="form-heading">
-                <h2>Register your interest</h2>
-                <p>Takes less than a minute. No payment, no spam — just one email when we launch.</p>
-            </div>
-
-            <div class="error-banner" id="errorBanner">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke-linecap="round" stroke-width="2"/></svg>
-                <span id="errorBannerMsg">Please fix the errors below.</span>
-            </div>
-
-            <form action="register.php" method="POST" id="regForm" novalidate>
-
-                <div class="field-row">
-                    <div class="field" id="f-firstname">
-                        <label for="firstname">First name <span class="field-req">*</span></label>
-                        <div class="input-shell">
-                            <input type="text" id="firstname" name="firstname" placeholder="Jordan" required autocomplete="given-name">
-                        </div>
-                        <span class="field-error">First name is required.</span>
-                    </div>
-                    <div class="field" id="f-surname">
-                        <label for="surname">Surname <span class="field-req">*</span></label>
-                        <div class="input-shell">
-                            <input type="text" id="surname" name="surname" placeholder="Rivera" required autocomplete="family-name">
-                        </div>
-                        <span class="field-error">Surname is required.</span>
-                    </div>
-                </div>
-
-                <div class="field" id="f-email">
-                    <label for="email">Email address <span class="field-req">*</span></label>
-                    <div class="input-shell">
-                        <input type="email" id="email" name="email" placeholder="jordan@example.com" required autocomplete="email">
-                    </div>
-                    <span class="field-error">A valid email address is required.</span>
-                </div>
-
-                <div class="check-group" id="f-terms">
-                    <label class="check-label">
-                        <input type="checkbox" id="terms" name="terms" value="yes">
-                        <span class="check-box">
-                            <svg viewBox="0 0 12 10" fill="none">
-                                <path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </span>
-                        <span class="check-text">I agree to the <a href="#">Terms &amp; Conditions</a> of Cit-E Cycling</span>
-                    </label>
-                   
-                </div>
-
-                <button type="submit" class="btn-submit" id="submitBtn">
-                    <span id="submitLabel">Register Interest</span>
-                    <svg id="submitArrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-
-            </form>
-
-            <p class="form-bottom">Part of the team? <a href="admin_login.html">Sign in to the admin dashboard</a></p>
-
-        </div>
-    </div>
-</div>
-
-<script>
-(function(){
-    var form=document.getElementById('regForm');
-    var btn=document.getElementById('submitBtn');
-    var btnLabel=document.getElementById('submitLabel');
-    var btnArrow=document.getElementById('submitArrow');
-    var banner=document.getElementById('errorBanner');
-    var bannerMsg=document.getElementById('errorBannerMsg');
-
-    document.getElementById('firstname').addEventListener('input',function(){clearErr('f-firstname');});
-    document.getElementById('surname').addEventListener('input',function(){clearErr('f-surname');});
-    document.getElementById('email').addEventListener('input',function(){clearErr('f-email');hideBanner();});
-    document.getElementById('terms').addEventListener('change',function(){clearErr('f-terms');hideBanner();});
-
-    form.addEventListener('submit',function(e){
-        e.preventDefault();
-        var first=document.getElementById('firstname').value.trim();
-        var last=document.getElementById('surname').value.trim();
-        var email=document.getElementById('email').value.trim();
-        var terms=document.getElementById('terms').checked;
-        var errors=[];
-
-        ['f-firstname','f-surname','f-email','f-terms'].forEach(clearErr);
-        hideBanner();
-
-        if(!first){markErr('f-firstname');errors.push('first');}
-        if(!last){markErr('f-surname');errors.push('last');}
-        if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){markErr('f-email');errors.push('email');}
-        if(!terms){markErr('f-terms');errors.push('terms');}
-
-        if(errors.length){
-            if(errors.length===1&&errors[0]==='terms'){
-                showBanner('You must tick the terms and conditions checkbox to continue.');
-            } else if(errors.indexOf('terms')>-1){
-                showBanner('Please fill in all required fields and accept the terms and conditions.');
-            } else {
-                showBanner('Please fill in all required fields before submitting.');
-            }
-            return;
+        :root {
+            --green: #1e7a46;
+            --green-deep: #145c34;
+            --green-light: #2f9e5c;
+            --green-tint: rgba(30, 122, 70, .1);
+            --amber: #f2a93b;
+            --ink: #101b2c;
+            --ash: #5b6b63;
+            --paper: #f4f7f3;
+            --surface: #fff;
+            --hairline: #e1e8df;
+            --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+            --r: 14px;
+            --rl: 22px
         }
 
-        btnLabel.textContent='Submitting…';
-        btnArrow.style.display='none';
-        btn.disabled=true;
-        form.submit();
-    });
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
 
-    function markErr(id){
-        var el=document.getElementById(id);
-        el.classList.add('show-error','shake');
-        el.addEventListener('animationend',function(){el.classList.remove('shake');},{once:true});
-    }
-    function clearErr(id){var el=document.getElementById(id);if(el)el.classList.remove('show-error','shake');}
-    function showBanner(msg){bannerMsg.textContent=msg;banner.classList.add('visible');window.scrollTo({top:0,behavior:'smooth'});}
-    function hideBanner(){banner.classList.remove('visible');}
-})();
-</script>
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: var(--font);
+            color: var(--ink);
+            background: var(--paper);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased
+        }
+
+        a {
+            color: var(--green);
+            text-decoration: none
+        }
+
+        a:hover {
+            color: var(--green-deep)
+        }
+
+        img,
+        svg {
+            display: block
+        }
+
+        /* Page split */
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1.05fr 1fr
+        }
+
+        /* ── Left brand panel ── */
+        .panel-brand {
+            position: relative;
+            background: radial-gradient(ellipse 60% 50% at 15% 20%, rgba(242, 169, 59, .2) 0%, transparent 55%), radial-gradient(ellipse 55% 55% at 85% 80%, rgba(47, 158, 92, .28) 0%, transparent 55%), linear-gradient(155deg, var(--ink) 0%, var(--green-deep) 60%, var(--green) 100%);
+            color: #fff;
+            padding: 48px 52px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden
+        }
+
+        .panel-brand::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(0deg, rgba(255, 255, 255, .03) 0 1px, transparent 1px 64px), repeating-linear-gradient(90deg, rgba(255, 255, 255, .03) 0 1px, transparent 1px 64px);
+            pointer-events: none
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            position: relative;
+            z-index: 1;
+            color: #fff
+        }
+
+        .brand-logo-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1.5px solid var(--green-light);
+            overflow: hidden;
+            flex-shrink: 0
+        }
+
+        .brand-logo-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .brand-logo span {
+            font-weight: 800;
+            font-size: 1rem;
+            letter-spacing: -.01em
+        }
+
+        .brand-copy {
+            position: relative;
+            z-index: 1;
+            max-width: 400px
+        }
+
+        .brand-eyebrow {
+            font-family: var(--mono);
+            font-size: .7rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--amber);
+            display: inline-block;
+            margin-bottom: 16px
+        }
+
+        .brand-copy h1 {
+            font-size: clamp(1.9rem, 3vw, 2.55rem);
+            font-weight: 800;
+            line-height: 1.12;
+            margin-bottom: 14px;
+            letter-spacing: -.025em
+        }
+
+        .brand-copy h1 .accent {
+            color: var(--amber)
+        }
+
+        .brand-copy p {
+            color: rgba(255, 255, 255, .7);
+            font-size: .95rem;
+            line-height: 1.6
+        }
+
+        .perk-list {
+            list-style: none;
+            margin-top: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+            position: relative;
+            z-index: 1
+        }
+
+        .perk-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            color: rgba(255, 255, 255, .82);
+            font-size: .91rem;
+            line-height: 1.5
+        }
+
+        .perk-check {
+            width: 21px;
+            height: 21px;
+            border-radius: 50%;
+            background: rgba(242, 169, 59, .15);
+            border: 1px solid rgba(242, 169, 59, .4);
+            color: var(--amber);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .76rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 1px
+        }
+
+        .brand-foot {
+            position: relative;
+            z-index: 1;
+            font-family: var(--mono);
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .3);
+            letter-spacing: .03em
+        }
+
+        /* ── Right form panel ── */
+        .panel-form {
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 56px 52px
+        }
+
+        .form-wrap {
+            width: 100%;
+            max-width: 440px
+        }
+
+        .form-toprow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 34px
+        }
+
+        .form-back {
+            font-size: .86rem;
+            font-weight: 600;
+            color: var(--ash);
+            transition: color .18s
+        }
+
+        .form-back:hover {
+            color: var(--ink)
+        }
+
+        .form-nav {
+            display: flex;
+            gap: 18px;
+            font-size: .86rem;
+            font-weight: 600
+        }
+
+        .form-nav a {
+            color: var(--ash);
+            transition: color .18s
+        }
+
+        .form-nav a:hover,
+        .form-nav a.active {
+            color: var(--green)
+        }
+
+        .form-heading {
+            margin-bottom: 26px
+        }
+
+        .form-heading h2 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -.025em;
+            margin-bottom: 7px
+        }
+
+        .form-heading p {
+            color: var(--ash);
+            font-size: .92rem;
+            line-height: 1.55
+        }
+
+        /* Fields */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px
+        }
+
+        .field {
+            margin-bottom: 17px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px
+        }
+
+        .field label {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: .01em
+        }
+
+        .field-req {
+            color: var(--amber)
+        }
+
+        .input-shell {
+            position: relative;
+            background: #fbfcfa;
+            border: 1.5px solid var(--hairline);
+            border-radius: var(--r);
+            transition: border-color .2s, box-shadow .2s, background .2s
+        }
+
+        .input-shell:focus-within {
+            border-color: var(--green);
+            box-shadow: 0 0 0 4px rgba(30, 122, 70, .1);
+            background: var(--surface)
+        }
+
+        .input-shell input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 13px 14px;
+            font-family: var(--font);
+            font-size: .93rem;
+            color: var(--ink);
+            border-radius: var(--r);
+            outline: none;
+            caret-color: var(--green)
+        }
+
+        .input-shell input::placeholder {
+            color: #a8b4a8
+        }
+
+        .field-error {
+            font-size: .76rem;
+            color: #dc2626;
+            font-family: var(--mono);
+            display: none
+        }
+
+        .field.show-error .field-error {
+            display: block
+        }
+
+        .field.show-error .input-shell {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, .1)
+        }
+
+        /* Checkbox */
+        .check-group {
+            margin: 4px 0 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .check-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 11px;
+            cursor: pointer
+        }
+
+        .check-label input[type=checkbox] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0
+        }
+
+        .check-box {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            background: #fbfcfa;
+            border: 1.5px solid var(--hairline);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1px;
+            transition: background .18s, border-color .18s, box-shadow .18s
+        }
+
+        .check-box svg {
+            width: 11px;
+            height: 11px;
+            opacity: 0;
+            transform: scale(.5);
+            transition: opacity .18s, transform .22s cubic-bezier(.34, 1.56, .64, 1)
+        }
+
+        .check-label input:checked~.check-box {
+            background: var(--green);
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(30, 122, 70, .12)
+        }
+
+        .check-label input:checked~.check-box svg {
+            opacity: 1;
+            transform: scale(1)
+        }
+
+        .check-group.show-error .check-box {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, .1)
+        }
+
+        .check-text {
+            font-size: .85rem;
+            color: var(--ash);
+            line-height: 1.5
+        }
+
+        .check-text a {
+            font-weight: 700;
+            color: var(--green)
+        }
+
+        .check-error {
+            font-size: .76rem;
+            color: #dc2626;
+            font-family: var(--mono);
+            display: none;
+            padding-left: 31px
+        }
+
+        .check-group.show-error .check-error {
+            display: block
+        }
+
+        /* Error banner */
+        .error-banner {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            background: rgba(220, 38, 38, .07);
+            border: 1px solid rgba(220, 38, 38, .22);
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: .85rem;
+            font-weight: 500;
+            color: #b91c1c;
+            animation: bannerIn .25s ease
+        }
+
+        .error-banner.visible {
+            display: flex
+        }
+
+        @keyframes bannerIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .error-banner svg {
+            width: 17px;
+            height: 17px;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            fill: none;
+            flex-shrink: 0
+        }
+
+        /* Shake */
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            20% {
+                transform: translateX(-6px)
+            }
+
+            40% {
+                transform: translateX(6px)
+            }
+
+            60% {
+                transform: translateX(-4px)
+            }
+
+            80% {
+                transform: translateX(4px)
+            }
+        }
+
+        .shake {
+            animation: shake .42s ease
+        }
+
+        /* Submit */
+        .btn-submit {
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--green);
+            border: none;
+            border-radius: var(--r);
+            font-family: var(--font);
+            font-size: .95rem;
+            font-weight: 800;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            box-shadow: 0 4px 16px rgba(30, 122, 70, .28);
+            transition: background .18s, transform .18s, box-shadow .18s
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: var(--green-deep);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 22px rgba(30, 122, 70, .36)
+        }
+
+        .btn-submit:disabled {
+            opacity: .65;
+            cursor: not-allowed
+        }
+
+        .btn-submit svg {
+            width: 17px;
+            height: 17px;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            fill: none;
+            transition: transform .18s
+        }
+
+        .btn-submit:hover svg {
+            transform: translateX(3px)
+        }
+
+        .form-bottom {
+            text-align: center;
+            margin-top: 18px;
+            font-size: .85rem;
+            color: var(--ash)
+        }
+
+        .form-bottom a {
+            font-weight: 700
+        }
+
+        /* Responsive */
+        @media(max-width:960px) {
+            .page {
+                grid-template-columns: 1fr
+            }
+
+            .panel-brand {
+                padding: 40px 32px
+            }
+
+            .perk-list {
+                display: none
+            }
+
+            .panel-form {
+                padding: 40px 28px
+            }
+        }
+
+        @media(max-width:480px) {
+            .field-row {
+                grid-template-columns: 1fr
+            }
+
+            .form-toprow {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px
+            }
+
+            .panel-form {
+                padding: 32px 20px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page">
+
+        <!-- Left brand panel -->
+        <div class="panel-brand">
+            <a class="brand-logo" href="index.html">
+                <div class="brand-logo-mark"><img src="./Resource/Logo.png" alt="Cit-E Cycling"></div>
+                <span>Cit-E Cycling</span>
+            </a>
+            <div class="brand-copy">
+                <span class="brand-eyebrow">Be first in line</span>
+                <h1>Ride the city,<br><span class="accent">differently</span>.</h1>
+                <p>Register your interest and we'll notify you the moment Cit-E opens routes, rides and memberships in
+                    your city.</p>
+                <ul class="perk-list">
+                    <li><span class="perk-check">✓</span>Early access to curated city routes</li>
+                    <li><span class="perk-check">✓</span>Priority invites to community rides</li>
+                    <li><span class="perk-check">✓</span>Launch-day notification for your city</li>
+                    <li><span class="perk-check">✓</span>No payment required to register</li>
+                </ul>
+            </div>
+            <p class="brand-foot">&copy; 2026 Cit-E Cycling — Built for riders, by riders.</p>
+        </div>
+
+        <!-- Right form panel -->
+        <div class="panel-form">
+            <div class="form-wrap">
+
+                <div class="form-toprow">
+                    <a href="index.html" class="form-back">← Home</a>
+                    <div class="form-nav">
+                        
+                    </div>
+                </div>
+
+                <div class="form-heading">
+                    <h2>Register your interest</h2>
+                    <p>Takes less than a minute. Have some patience mate! </p>
+                </div>
+
+                <div class="error-banner" id="errorBanner">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" stroke-width="1.8" />
+                        <path d="M12 8v4M12 16h.01" stroke-linecap="round" stroke-width="2" />
+                    </svg>
+                    <span id="errorBannerMsg">Please fix the errors below.</span>
+                </div>
+
+                <form action="register.php" method="POST" id="regForm" novalidate>
+
+                    <div class="field-row">
+                        <div class="field" id="f-firstname">
+                            <label for="firstname">First name <span class="field-req">*</span></label>
+                            <div class="input-shell">
+                                <input type="text" id="firstname" name="firstname" placeholder="Jordan" required
+                                    autocomplete="given-name">
+                            </div>
+                            <span class="field-error">First name is required.</span>
+                        </div>
+                        <div class="field" id="f-surname">
+                            <label for="surname">Surname <span class="field-req">*</span></label>
+                            <div class="input-shell">
+                                <input type="text" id="surname" name="surname" placeholder="Rivera" required
+                                    autocomplete="family-name">
+                            </div>
+                            <span class="field-error">Surname is required.</span>
+                        </div>
+                    </div>
+
+                    <div class="field" id="f-email">
+                        <label for="email">Email address <span class="field-req">*</span></label>
+                        <div class="input-shell">
+                            <input type="email" id="email" name="email" placeholder="jordan@example.com" required
+                                autocomplete="email">
+                        </div>
+                        <span class="field-error">A valid email address is required.</span>
+                    </div>
+
+                    <div class="check-group" id="f-terms">
+                        <label class="check-label">
+                            <input type="checkbox" id="terms" name="terms" value="yes">
+                            <span class="check-box">
+                                <svg viewBox="0 0 12 10" fill="none">
+                                    <path d="M1 5l3.5 3.5L11 1" stroke="#fff" stroke-width="2.2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                            <span class="check-text">I agree to the <a href="#">Terms &amp; Conditions</a> of Cit-E
+                                Cycling</span>
+                        </label>
+
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span id="submitLabel">Register Interest</span>
+                        <svg id="submitArrow" viewBox="0 0 24 24">
+                            <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+
+                </form>
+
+                <p class="form-bottom">Part of the team? <a href="admin_login.html">Sign in to the Admin Panel</a></p>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var form = document.getElementById('regForm');
+            var btn = document.getElementById('submitBtn');
+            var btnLabel = document.getElementById('submitLabel');
+            var btnArrow = document.getElementById('submitArrow');
+            var banner = document.getElementById('errorBanner');
+            var bannerMsg = document.getElementById('errorBannerMsg');
+
+            document.getElementById('firstname').addEventListener('input', function () { clearErr('f-firstname'); });
+            document.getElementById('surname').addEventListener('input', function () { clearErr('f-surname'); });
+            document.getElementById('email').addEventListener('input', function () { clearErr('f-email'); hideBanner(); });
+            document.getElementById('terms').addEventListener('change', function () { clearErr('f-terms'); hideBanner(); });
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var first = document.getElementById('firstname').value.trim();
+                var last = document.getElementById('surname').value.trim();
+                var email = document.getElementById('email').value.trim();
+                var terms = document.getElementById('terms').checked;
+                var errors = [];
+
+                ['f-firstname', 'f-surname', 'f-email', 'f-terms'].forEach(clearErr);
+                hideBanner();
+
+                if (!first) { markErr('f-firstname'); errors.push('first'); }
+                if (!last) { markErr('f-surname'); errors.push('last'); }
+                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { markErr('f-email'); errors.push('email'); }
+                if (!terms) { markErr('f-terms'); errors.push('terms'); }
+
+                if (errors.length) {
+                    if (errors.length === 1 && errors[0] === 'terms') {
+                        showBanner('You must tick the terms and conditions checkbox to continue.');
+                    } else if (errors.indexOf('terms') > -1) {
+                        showBanner('Please fill in all required fields and accept the terms and conditions.');
+                    } else {
+                        showBanner('Please fill in all required fields before submitting.');
+                    }
+                    return;
+                }
+
+                btnLabel.textContent = 'Submitting…';
+                btnArrow.style.display = 'none';
+                btn.disabled = true;
+                form.submit();
+            });
+
+            function markErr(id) {
+                var el = document.getElementById(id);
+                el.classList.add('show-error', 'shake');
+                el.addEventListener('animationend', function () { el.classList.remove('shake'); }, { once: true });
+            }
+            function clearErr(id) { var el = document.getElementById(id); if (el) el.classList.remove('show-error', 'shake'); }
+            function showBanner(msg) { bannerMsg.textContent = msg; banner.classList.add('visible'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+            function hideBanner() { banner.classList.remove('visible'); }
+        })();
+    </script>
 </body>
+
 </html>
